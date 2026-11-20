@@ -41,32 +41,32 @@ Kill test: mixture bits below order-1 Markov with CI below 0 on 6 of 6 traces (t
 
 ## Route 2: page loads in Chrome (Playwright, Chrome for Testing), 2x2 at three Wi-Fi profiles
 
-Rows: Mac tool off/on x extension off/on. Home = home page load. Next = the person waits for the linked page (loadEventEnd minus activationStart). 58 measured visit pairs, 4 site errors excluded.
+Rows: Mac tool off/on x extension off/on. Home = home page load. Next = the person waits for the linked page (loadEventEnd minus activationStart). 170 measured visit pairs, 68 site errors excluded.
 
 | Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |
 |---|---|---|---|---|---|---|---|---|
-Sanity check: 0 of 58 visit pairs repeat another pair's exact timings.
+Sanity check: 0 of 170 visit pairs repeat another pair's exact timings.
 
-| home Wi-Fi (10 ms) | off | off | 6 | 2007 | 2834 | 1284 [888, 3510] | 1459 | 0 |
-| home Wi-Fi (10 ms) | off | on | 6 | 2276 | 3093 | 1404 [870, 2415] | 1519 | 0 |
-| home Wi-Fi (10 ms) | on | off | 5 | 2453 | 3217 | 1053 [312, 3543] | 2216 | 2 |
-| home Wi-Fi (10 ms) | on | on | 5 | 4791 | 5331 | 1636 [754, 4266] | 3946 | 3 |
-| busy campus Wi-Fi (60 ms) | off | off | 5 | 2830 | 5743 | 1428 [961, 18381] | 6368 | 0 |
-| busy campus Wi-Fi (60 ms) | off | on | 5 | 3235 | 3489 | 1049 [881, 4393] | 3589 | 0 |
-| busy campus Wi-Fi (60 ms) | on | off | 5 | 3825 | 3874 | 1531 [875, 4563] | 2854 | 2 |
-| busy campus Wi-Fi (60 ms) | on | on | 6 | 2888 | 3818 | 1678 [1141, 4232] | 2025 | 2 |
-| poor Wi-Fi (150 ms) | off | off | 4 | 3590 | 4397 | 1769 [1121, 3596] | 1978 | 0 |
-| poor Wi-Fi (150 ms) | off | on | 3 | 2163 | 2163 | 1262 [737, 2825] | 1262 | 0 |
-| poor Wi-Fi (150 ms) | on | off | 4 | 5095 | 7331 | 2077 [807, 4941] | 2896 | 2 |
-| poor Wi-Fi (150 ms) | on | on | 4 | 4614 | 5844 | 1760 [1584, 2392] | 1859 | 2 |
+| home Wi-Fi (10 ms) | off | off | 13 | 1181 | 2929 | 1110 [872, 2430] | 2430 | 0 |
+| home Wi-Fi (10 ms) | off | on | 13 | 1458 | 3147 | 1289 [723, 1655] | 1655 | 0 |
+| home Wi-Fi (10 ms) | on | off | 12 | 1261 | 3217 | 851 [368, 1860] | 1666 | 3 |
+| home Wi-Fi (10 ms) | on | on | 13 | 1618 | 5331 | 1529 [754, 2654] | 2654 | 5 |
+| busy campus Wi-Fi (60 ms) | off | off | 13 | 2177 | 4805 | 1428 [961, 2195] | 2195 | 0 |
+| busy campus Wi-Fi (60 ms) | off | on | 12 | 2217 | 3489 | 1209 [888, 3693] | 3589 | 0 |
+| busy campus Wi-Fi (60 ms) | on | off | 20 | 1755 | 3825 | 1478 [885, 2785] | 2789 | 3 |
+| busy campus Wi-Fi (60 ms) | on | on | 20 | 3125 | 4996 | 2056 [1274, 3448] | 3746 | 4 |
+| poor Wi-Fi (150 ms) | off | off | 15 | 2981 | 4397 | 1734 [1178, 2025] | 2025 | 0 |
+| poor Wi-Fi (150 ms) | off | on | 13 | 2184 | 2820 | 1829 [1281, 2336] | 2336 | 0 |
+| poor Wi-Fi (150 ms) | on | off | 14 | 2745 | 7099 | 2002 [1520, 3429] | 2896 | 5 |
+| poor Wi-Fi (150 ms) | on | on | 12 | 3753 | 5979 | 1760 [1437, 3107] | 2392 | 5 |
 
 Paired effects (same site): Mac tool on minus off on home load; extension on minus off on next-page wait. Negative = faster.
 
 | Profile | Mac tool effect, home, median ms (95% CI), n | Extension effect, next page, median ms (95% CI), n |
 |---|---|---|
-| home Wi-Fi (10 ms) | 330 [-111, 667], n=10 | -329 [-592, 980], n=9 |
-| busy campus Wi-Fi (60 ms) | -92 [-1026, 875], n=10 | 75 [-825, 509], n=10 |
-| poor Wi-Fi (150 ms) | -1060 [-1487, -282], n=7 | 597 [-433, 918], n=7 |
+| home Wi-Fi (10 ms) | 169 [-130, 667], n=25 | -213 [-388, -7], n=23 |
+| busy campus Wi-Fi (60 ms) | 138 [-61, 478], n=32 | 89 [-67, 448], n=24 |
+| poor Wi-Fi (150 ms) | -255 [-1060, 70], n=23 | 111 [-163, 774], n=19 |
 
 ## Route 3: curl to 50 API hosts, Mac tool off/on
 
@@ -90,16 +90,24 @@ Paired total time, off minus on (positive = Mac tool faster): cold median -9.96 
 | Quicklink 3.0.1 | 8 | 1584 [427, 2573] | 1918 | 4 | 87 |
 | Predictive Loading (ours) | 7 | 575 [452, 1340] | 1101 | 4 | 9 |
 
-14 runs failed (site errors, link not found) and are excluded.
+68 runs failed (site errors, link not found) and are excluded.
+
+## Live browsing check (Chrome for Testing with the extension, 10 minutes)
+
+58 page loads, 2 errors, 0 requests from the extension origin during browsing. Popup: "No measurements yet" (Correct predictions so far: n=3 loaded early, n=0 held out.)
 
 ## Machine-readable values
 
 ```
+live.errors = 2
+live.extensionOriginRequestsDuringBrowsing = 0
+live.loads = 58
+live.minutes = 10
 pb.default.med = 2375
 pb.default.n = 8
 pb.default.pre = 0
 pb.default.spec = 1
-pb.errors = 14
+pb.errors = 68
 pb.extension.med = 575
 pb.extension.n = 7
 pb.extension.pre = 4
@@ -280,81 +288,81 @@ r1.warm.unbound_plus_predictor.n = 1996
 r1.warm.unbound_plus_predictor.p75_ci95.hi = 22.04
 r1.warm.unbound_plus_predictor.p75_ci95.lo = 19.56
 r1.warm.unbound_plus_predictor.p75_ms = 20.92
-r2.10.eff.ext = -329
-r2.10.eff.ext.hi = 980
-r2.10.eff.ext.lo = -592
-r2.10.eff.ext.n = 9
-r2.10.eff.mac = 330
+r2.10.eff.ext = -213
+r2.10.eff.ext.hi = -7
+r2.10.eff.ext.lo = -388
+r2.10.eff.ext.n = 23
+r2.10.eff.mac = 169
 r2.10.eff.mac.hi = 667
-r2.10.eff.mac.lo = -111
-r2.10.eff.mac.n = 10
-r2.10.off.off.home = 2007
-r2.10.off.off.n = 6
-r2.10.off.off.next = 1284
+r2.10.eff.mac.lo = -130
+r2.10.eff.mac.n = 25
+r2.10.off.off.home = 1181
+r2.10.off.off.n = 13
+r2.10.off.off.next = 1110
 r2.10.off.off.pre = 0
-r2.10.off.on.home = 2276
-r2.10.off.on.n = 6
-r2.10.off.on.next = 1404
+r2.10.off.on.home = 1458
+r2.10.off.on.n = 13
+r2.10.off.on.next = 1289
 r2.10.off.on.pre = 0
-r2.10.on.off.home = 2453
-r2.10.on.off.n = 5
-r2.10.on.off.next = 1053
-r2.10.on.off.pre = 2
-r2.10.on.on.home = 4791
-r2.10.on.on.n = 5
-r2.10.on.on.next = 1636
-r2.10.on.on.pre = 3
-r2.150.eff.ext = 597
-r2.150.eff.ext.hi = 918
-r2.150.eff.ext.lo = -433
-r2.150.eff.ext.n = 7
-r2.150.eff.mac = -1060
-r2.150.eff.mac.hi = -282
-r2.150.eff.mac.lo = -1487
-r2.150.eff.mac.n = 7
-r2.150.off.off.home = 3590
-r2.150.off.off.n = 4
-r2.150.off.off.next = 1769
+r2.10.on.off.home = 1261
+r2.10.on.off.n = 12
+r2.10.on.off.next = 851
+r2.10.on.off.pre = 3
+r2.10.on.on.home = 1618
+r2.10.on.on.n = 13
+r2.10.on.on.next = 1529
+r2.10.on.on.pre = 5
+r2.150.eff.ext = 111
+r2.150.eff.ext.hi = 774
+r2.150.eff.ext.lo = -163
+r2.150.eff.ext.n = 19
+r2.150.eff.mac = -255
+r2.150.eff.mac.hi = 70
+r2.150.eff.mac.lo = -1060
+r2.150.eff.mac.n = 23
+r2.150.off.off.home = 2981
+r2.150.off.off.n = 15
+r2.150.off.off.next = 1734
 r2.150.off.off.pre = 0
-r2.150.off.on.home = 2163
-r2.150.off.on.n = 3
-r2.150.off.on.next = 1262
+r2.150.off.on.home = 2184
+r2.150.off.on.n = 13
+r2.150.off.on.next = 1829
 r2.150.off.on.pre = 0
-r2.150.on.off.home = 5095
-r2.150.on.off.n = 4
-r2.150.on.off.next = 2077
-r2.150.on.off.pre = 2
-r2.150.on.on.home = 4614
-r2.150.on.on.n = 4
+r2.150.on.off.home = 2745
+r2.150.on.off.n = 14
+r2.150.on.off.next = 2002
+r2.150.on.off.pre = 5
+r2.150.on.on.home = 3753
+r2.150.on.on.n = 12
 r2.150.on.on.next = 1760
-r2.150.on.on.pre = 2
-r2.60.eff.ext = 75
-r2.60.eff.ext.hi = 509
-r2.60.eff.ext.lo = -825
-r2.60.eff.ext.n = 10
-r2.60.eff.mac = -92
-r2.60.eff.mac.hi = 875
-r2.60.eff.mac.lo = -1026
-r2.60.eff.mac.n = 10
-r2.60.off.off.home = 2830
-r2.60.off.off.n = 5
+r2.150.on.on.pre = 5
+r2.60.eff.ext = 89
+r2.60.eff.ext.hi = 448
+r2.60.eff.ext.lo = -67
+r2.60.eff.ext.n = 24
+r2.60.eff.mac = 138
+r2.60.eff.mac.hi = 478
+r2.60.eff.mac.lo = -61
+r2.60.eff.mac.n = 32
+r2.60.off.off.home = 2177
+r2.60.off.off.n = 13
 r2.60.off.off.next = 1428
 r2.60.off.off.pre = 0
-r2.60.off.on.home = 3235
-r2.60.off.on.n = 5
-r2.60.off.on.next = 1049
+r2.60.off.on.home = 2217
+r2.60.off.on.n = 12
+r2.60.off.on.next = 1209
 r2.60.off.on.pre = 0
-r2.60.on.off.home = 3825
-r2.60.on.off.n = 5
-r2.60.on.off.next = 1531
-r2.60.on.off.pre = 2
-r2.60.on.on.home = 2888
-r2.60.on.on.n = 6
-r2.60.on.on.next = 1678
-r2.60.on.on.pre = 2
+r2.60.on.off.home = 1755
+r2.60.on.off.n = 20
+r2.60.on.off.next = 1478
+r2.60.on.off.pre = 3
+r2.60.on.on.home = 3125
+r2.60.on.on.n = 20
+r2.60.on.on.next = 2056
+r2.60.on.on.pre = 4
 r2.duplicate_timings = 0
-r2.errors = 4
-r2.n = 58
+r2.errors = 68
+r2.n = 170
 r3.cold.off.connect = 0.23
 r3.cold.off.n = 50
 r3.cold.off.total = 148.4

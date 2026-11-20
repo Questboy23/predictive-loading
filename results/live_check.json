@@ -1,0 +1,9 @@
+{
+ "minutes": 10,
+ "loads": 58,
+ "preloaded": 0,
+ "errors": 2,
+ "extensionOriginRequestsDuringBrowsing": 0,
+ "popupSaved": "No measurements yet",
+ "popupDetail": "Correct predictions so far: n=3 loaded early, n=0 held out."
+}

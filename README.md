@@ -36,7 +36,7 @@ Nothing leaves your device. See [docs/PRIVACY.md](docs/PRIVACY.md).
 npm install && tests/run_all.sh
 ```
 
-Runs: predictor unit tests, Python/JS parity, link-safety cases, 12 macOS safety scenarios against a real Unbound with fake system tools, a 50-load end-to-end Chromium run of the extension, and the security gate (manifest, forbidden APIs, stdlib-only imports, semgrep, bandit, gitleaks).
+Runs: predictor unit tests, Python/JS parity, link-safety cases, 14 macOS safety tests against a real Unbound with fake system tools, a 50-load end-to-end Chromium run of the extension, and the security gate (manifest, forbidden APIs, stdlib-only imports, semgrep, bandit, gitleaks).
 
 ## Credits
 
