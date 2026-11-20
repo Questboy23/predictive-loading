@@ -115,9 +115,13 @@ def route1():
         for c, s in d[phase].items():
             for k in ("median_ms", "p75_ms", "mean_ms", "n"):
                 kv("r1.%s.%s.%s" % (phase, c, k), str(s[k]))
+            for k in ("median_ci95", "p75_ci95"):
+                kv("r1.%s.%s.%s.lo" % (phase, c, k), str(s[k][0]))
+                kv("r1.%s.%s.%s.hi" % (phase, c, k), str(s[k][1]))
             w("| %s | %s | %d | %s [%s, %s] | %s [%s, %s] | %s |" % (phase, names[c], s["n"], s["median_ms"], s["median_ci95"][0],
                                                                  s["median_ci95"][1], s["p75_ms"], s["p75_ci95"][0], s["p75_ci95"][1], s["mean_ms"]))
     kv("r1.rounds", str(d["rounds"]))
+    kv("r1.names", str(d["names"]))
     kv("r1.wait", str(d["wait_s"]))
     st = d.get("daemon_stats", {})
     if "ms_saved_per_day" in st:
@@ -136,7 +140,7 @@ def route2():
     errs = [r for r in jsonl("route2.jsonl") if "error" in r]
     if not rows:
         return
-    w("## Route 2: page loads in Chrome (browsertime), 2x2 at three Wi-Fi profiles")
+    w("## Route 2: page loads in Chrome (Playwright, Chrome for Testing), 2x2 at three Wi-Fi profiles")
     w()
     w("Rows: Mac tool off/on x extension off/on. Home = home page load. Next = the person waits for the linked page "
       "(loadEventEnd minus activationStart). %d measured visit pairs, %d site errors excluded." % (len(rows), len(errs)))
@@ -144,6 +148,12 @@ def route2():
     w("| Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |")
     w("|---|---|---|---|---|---|---|---|---|")
     kv("r2.n", str(len(rows)))
+    # Sanity check: separate sessions must not report identical timings (a shared-browser bug did once).
+    sig = [(round(r["home"]["waited"], 1), round(r["next"]["waited"], 1)) for r in rows]
+    dups = len(sig) - len(set(sig))
+    kv("r2.duplicate_timings", str(dups))
+    w("Sanity check: %d of %d visit pairs repeat another pair's exact timings." % (dups, len(rows)))
+    w()
     kv("r2.errors", str(len(errs)))
     for rtt in (10, 60, 150):
         for ext in ("off", "on"):
@@ -153,7 +163,7 @@ def route2():
                     continue
                 home = [r["home"]["waited"] for r in cell]
                 nxt = [r["next"]["waited"] for r in cell]
-                pre = sum(1 for r in cell if r["next"]["activationStart"] > 0 or r["next"]["deliveryType"] == "navigational-prefetch")
+                pre = sum(1 for r in cell if r["next"]["activationStart"] > 0 or r["next"]["deliveryType"] in ("navigational-prefetch", "cache"))
                 lo, hi = boot(nxt)
                 key = "r2.%d.%s.%s" % (rtt, ext, mode)
                 kv(key + ".n", str(len(cell)))
@@ -202,6 +212,8 @@ def route3():
     if not d:
         return
     w("## Route 3: curl to %d API hosts, Mac tool off/on" % d["hosts"])
+    kv("r3.hosts", str(d["hosts"]))
+    kv("r3.rounds", str(d["rounds"]))
     w()
     w("%d rounds, host and mode order shuffled, %d s between rounds; %d failed requests excluded." % (d["rounds"], d["wait_s"], d["failed"]))
     w()

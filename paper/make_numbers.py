@@ -1,4 +1,4 @@
-"""Reads the machine-readable block of RESULTS.md and writes numbers.tex
+r"""Reads the machine-readable block of RESULTS.md and writes numbers.tex
 (\V{key} macros) plus the grayscale charts. The paper takes every number from here."""
 import os
 import re

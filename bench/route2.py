@@ -1,10 +1,9 @@
-"""Route 2 driver: browsertime + Chrome for Testing through the bench SOCKS
+"""Route 2 driver: Playwright + Chrome for Testing (bench/route2_pw.js) through the bench SOCKS
 proxy. 2x2 {Mac tool off/on (proxy resolver)} x {extension off/on}, at three
 Wi-Fi RTT profiles. Session order (profile x extension) is shuffled; the DNS
 mode order is shuffled per site inside each session.
 Writes results/route2.jsonl.  Usage: python3 bench/route2.py [n_sites]
 """
-import glob
 import os
 import random
 import subprocess
@@ -17,30 +16,15 @@ import env  # noqa: E402
 import socksproxy  # noqa: E402
 
 PROFILES = {"home_wifi": 10, "busy_campus_wifi": 60, "poor_wifi": 150}
-CFT = glob.glob(os.path.expanduser("~/Library/Caches/ms-playwright/chromium-1255/chrome-mac-arm64/"
-                                   "Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"))[0]
-CHROMEDRIVER = os.path.expanduser("~/.cache/pl-tools/chromedriver-mac-arm64/chromedriver")
 EXT = os.path.join(ROOT, "extension")
 OUT = os.path.join(ROOT, "results", "route2.jsonl")
 
 
-def session(rtt, ext, n, seed, port=None):
-    port = port or env.PROXY_PORT
+def session(rtt, ext, n, seed, port):
     socksproxy.send(port, "RTT %d" % rtt)
-    args = ["--proxy-server=socks5://127.0.0.1:%d" % port,
-            "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1", "--no-first-run"]
-    if ext == "on":
-        args += ["--load-extension=" + EXT, "--disable-extensions-except=" + EXT]
-    cmd = ["browsertime", "--browser", "chrome", "--chrome.binaryPath", CFT, "--chrome.chromedriverPath", CHROMEDRIVER,
-           "-n", "1", "--headless", "--visualMetrics", "false", "--video", "false", "--screenshot", "false",
-           "--timeouts.script", "3600000", "--timeouts.pageLoad", "60000",
-           "--resultDir", os.path.join(ROOT, "results", "browsertime", "rtt%d-ext%s" % (rtt, ext))]
-    for a in args:
-        cmd.append("--chrome.args=" + a)
-    cmd.append(os.path.join(ROOT, "bench", "route2_script.cjs"))
-    e = dict(os.environ, R2_SITES=os.path.join(ROOT, "bench", "sites.json"), R2_OUT=OUT, R2_EXT=ext,
-             R2_RTT=str(rtt), R2_N=str(n), R2_SEED=str(seed), R2_CTL=str(port + 1))
-    return subprocess.Popen(cmd, env=e, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    cmd = ["node", os.path.join(ROOT, "bench", "route2_pw.js"), str(rtt), ext, str(port), str(seed), str(n)]
+    log = open(os.path.join(ROOT, "results", "route2-rtt%d-ext%s.log" % (rtt, ext)), "w")
+    return subprocess.Popen(cmd, env=dict(os.environ, R2_OUT=OUT), stdout=log, stderr=subprocess.STDOUT)
 
 
 def main():

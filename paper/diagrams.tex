@@ -3,7 +3,7 @@
 \begin{tikzpicture}[font=\small, node distance=6mm and 9mm,
   box/.style={draw, thick, rounded corners=2pt, align=center, minimum height=9mm, fill=gray!8},
   shared/.style={draw, thick, double, rounded corners=2pt, align=center, minimum height=9mm, fill=gray!25},
-  arr/.style={-{Stealth[length=2mm]}, thick}, dash/.style={-{Stealth[length=2mm]}, thick, dashed}]
+  arr/.style={-{Stealth[length=2mm]}, thick}, darr/.style={-{Stealth[length=2mm]}, thick, dashed}]
   % macOS column
   \node[box] (apps) {Any app\\(getaddrinfo)};
   \node[box, below=of apps] (mdns) {macOS resolver\\DNS = 127.0.0.1, ::1};
@@ -15,10 +15,10 @@
   \draw[arr] (apps) -- (mdns);
   \draw[arr] (mdns) -- (unb);
   \draw[arr] (unb) -- (up);
-  \draw[dash] (unb.north east) -- node[above, sloped, font=\scriptsize]{query log} (daemon.west);
+  \draw[darr] (unb.north east) -- node[above, sloped, font=\scriptsize]{query log} (daemon.west);
   \draw[arr] (daemon) -- (pred);
   \draw[arr] (pred) -- (rule);
-  \draw[dash] (rule.west) -- node[below, sloped, font=\scriptsize]{warm 127.0.0.1} (unb.east);
+  \draw[darr] (rule.west) -- node[below, sloped, font=\scriptsize]{warm 127.0.0.1} (unb.east);
   % Chrome column
   \node[box, right=18mm of pred] (cs) {Content script\\SHA-256 of path};
   \node[box, above=of cs] (page) {Page in Chrome\\same-origin links};
@@ -28,7 +28,7 @@
   \draw[arr] (cs) -- (pred);
   \draw[arr] (rule) -- (rules);
   \draw[arr] (rules) -- node[right, font=\scriptsize]{} (store);
-  \draw[dash] (rules.north east) to[bend right=40] node[right, font=\scriptsize]{Chrome loads early} (page.east);
+  \draw[darr] (rules.north east) to[bend right=40] node[right, font=\scriptsize]{Chrome loads early} (page.east);
 \end{tikzpicture}}
 
 \newcommand{\timelinediagram}{%

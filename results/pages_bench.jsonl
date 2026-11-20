@@ -17,3 +17,34 @@
 {"site":"microsoft.com","method":"default","speculativeRequests":0,"url":"https://www.microsoft.com/en-us/windows/","waited":6704.9000000059605,"activationStart":0,"deliveryType":""}
 {"site":"microsoft.com","method":"quicklink","speculativeRequests":15,"url":"https://www.microsoft.com/en-us/windows/","waited":3284.800000011921,"activationStart":0,"deliveryType":""}
 {"site":"microsoft.com","method":"instantpage","speculativeRequests":1,"url":"https://www.microsoft.com/en-us/windows/","waited":2182.7999999821186,"activationStart":0,"deliveryType":""}
+{"site":"microsoft.com","method":"extension","speculativeRequests":1,"url":"https://www.microsoft.com/en-us/windows/","waited":1339.5,"activationStart":0,"deliveryType":"navigational-prefetch"}
+{"site":"apple.com","method":"instantpage","speculativeRequests":1,"url":"https://www.apple.com/retail/","waited":1834.5,"activationStart":0,"deliveryType":""}
+{"site":"apple.com","method":"default","speculativeRequests":1,"url":"https://www.apple.com/retail/","waited":4465.600000023842,"activationStart":0,"deliveryType":""}
+{"site":"apple.com","method":"quicklink","speculativeRequests":20,"url":"https://www.apple.com/retail/","waited":874.4000000059605,"activationStart":0,"deliveryType":"cache"}
+{"site":"apple.com","method":"extension","speculativeRequests":2,"url":"https://www.apple.com/retail/","waited":575.1999999880791,"activationStart":0,"deliveryType":""}
+{"site":"azure.com","method":"quicklink","speculativeRequests":5,"url":"https://azure.microsoft.com/en-us/support/","waited":1918.0999999940395,"activationStart":0,"deliveryType":""}
+{"site":"azure.com","method":"default","speculativeRequests":0,"url":"https://azure.microsoft.com/en-us/support/","waited":1198.300000011921,"activationStart":0,"deliveryType":""}
+{"site":"azure.com","method":"extension","speculativeRequests":1,"url":"https://azure.microsoft.com/en-us/support/","waited":2076.5999999940395,"activationStart":0,"deliveryType":"navigational-prefetch"}
+{"site":"azure.com","method":"instantpage","speculativeRequests":1,"url":"https://azure.microsoft.com/en-us/support/","waited":1189.9000000059605,"activationStart":0,"deliveryType":""}
+{"site":"triplinkintl.com","method":"quicklink","speculativeRequests":9,"url":"https://www.triplinkintl.com/en/contact/","waited":3227.5,"activationStart":0,"deliveryType":"cache"}
+{"site":"triplinkintl.com","method":"instantpage","speculativeRequests":0,"url":"https://www.triplinkintl.com/en/contact/","waited":2711.4000000059605,"activationStart":0,"deliveryType":""}
+{"site":"triplinkintl.com","method":"default","speculativeRequests":0,"url":"https://www.triplinkintl.com/en/contact/","waited":4255.800000011921,"activationStart":0,"deliveryType":""}
+{"site":"triplinkintl.com","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.triplinkintl.com/en/home/\nCall log:\n  - navigating to \"https://www.triplinkintl.com/en/home/\", waitin"}
+{"site":"sharepoint.com","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration\nCall log:\n  - navigating to \"https://www.m"}
+{"site":"sharepoint.com","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration\nCall log:\n  - navigating to \"https://www.m"}
+{"site":"sharepoint.com","method":"default","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration\nCall log:\n  - navigating to \"https://www.m"}
+{"site":"sharepoint.com","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration\nCall log:\n  - navigating to \"https://www.m"}
+{"site":"github.com","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://github.com/\nCall log:\n  - navigating to \"https://github.com/\", waiting until \"load\"\n"}
+{"site":"github.com","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://github.com/\nCall log:\n  - navigating to \"https://github.com/\", waiting until \"load\"\n"}
+{"site":"github.com","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://github.com/\nCall log:\n  - navigating to \"https://github.com/\", waiting until \"load\"\n"}
+{"site":"github.com","method":"default","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://github.com/\nCall log:\n  - navigating to \"https://github.com/\", waiting until \"load\"\n"}
+{"site":"dzen.ru","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://dzen.ru/\nCall log:\n  - navigating to \"https://dzen.ru/\", waiting until \"load\"\n"}
+{"site":"dzen.ru","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://dzen.ru/\nCall log:\n  - navigating to \"https://dzen.ru/\", waiting until \"load\"\n"}
+{"site":"dzen.ru","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://dzen.ru/\nCall log:\n  - navigating to \"https://dzen.ru/\", waiting until \"load\"\n"}
+{"site":"dzen.ru","method":"default","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://dzen.ru/\nCall log:\n  - navigating to \"https://dzen.ru/\", waiting until \"load\"\n"}
+{"site":"netflix.com","method":"default","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.netflix.com/\nCall log:\n  - navigating to \"https://www.netflix.com/\", waiting until \"load\"\n"}
+{"site":"netflix.com","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.netflix.com/\nCall log:\n  - navigating to \"https://www.netflix.com/\", waiting until \"load\"\n"}
+{"site":"netflix.com","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.netflix.com/\nCall log:\n  - navigating to \"https://www.netflix.com/\", waiting until \"load\"\n"}
+{"site":"netflix.com","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.netflix.com/\nCall log:\n  - navigating to \"https://www.netflix.com/\", waiting until \"load\"\n"}
+{"site":"fastly.net","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.fastly.com/\nCall log:\n  - navigating to \"https://www.fastly.com/\", waiting until \"load\"\n"}
+{"site":"fastly.net","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.fastly.com/\nCall log:\n  - navigating to \"https://www.fastly.com/\", waiting until \"load\"\n"}
