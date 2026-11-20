@@ -1,0 +1,11 @@
+data/raw/
+data/*.log
+__pycache__/
+.ruff_cache/
+node_modules/
+*.zip
+dist/
+.DS_Store
+results/browsertime/
+paper/*.aux
+paper/*.log
