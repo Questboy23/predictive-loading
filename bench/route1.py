@@ -76,7 +76,7 @@ def main():
     nf = os.path.join(env.BASE, "tranco500.txt")
     env.start(with_daemon=True)
     plain, daemon = start_plain_unbound()
-    system = daemon.network_resolvers()[0]
+    system = (daemon.network_resolvers() or [os.environ["PL_BENCH_OFF_DNS"]])[0]  # Mac tool live: pass the DHCP resolver
     conds = {"system_default": system, "unbound_alone": "127.0.0.1:5301", "unbound_plus_predictor": "127.0.0.1:5300"}
     raw = {c: [] for c in conds}
     rng = random.Random(1)

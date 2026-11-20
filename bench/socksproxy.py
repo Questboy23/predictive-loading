@@ -51,7 +51,7 @@ def parse_answers(data):
     return out
 
 
-async def unbound_lookup(name, port):
+async def unbound_lookup(name, port, host="127.0.0.1"):
     loop = asyncio.get_running_loop()
     for qtype in (1, 28):
         qid = int.from_bytes(os.urandom(2), "big")
@@ -64,7 +64,7 @@ async def unbound_lookup(name, port):
                 if data[:2] == q[:2] and not fut.done():
                     fut.set_result(data)
 
-        tr, _ = await loop.create_datagram_endpoint(P, remote_addr=("127.0.0.1", port))
+        tr, _ = await loop.create_datagram_endpoint(P, remote_addr=(host, port))
         tr.sendto(q)
         try:
             data = await asyncio.wait_for(fut, 5)
@@ -82,6 +82,8 @@ async def resolve(name, unbound_port):
     t0 = time.perf_counter()
     if STATE["mode"] == "on":
         addrs = await unbound_lookup(name, unbound_port)
+    elif os.environ.get("PL_BENCH_OFF_DNS"):  # Mac tool live: system DNS is our Unbound, so ask the network resolver directly
+        addrs = await unbound_lookup(name, 53, os.environ["PL_BENCH_OFF_DNS"])
     else:
         loop = asyncio.get_running_loop()
         try:
