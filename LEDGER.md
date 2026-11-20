@@ -1,5 +1,9 @@
 # LEDGER: predictive-loading
 
+## Update 2026-11-20 00:55 EST
+- Extension installed privately in Reed's Chrome (Default profile, unpacked, id cgopchobemmbolhpnfdbhflkpohhicgn) via `install/setup.sh chrome` and the new on-screen guide (guide/Guide.swift). Verified on screen: card shows Predictive Loading 1.0.0, On, pinned.
+- Web Store submission paused at Reed's request (test privately first). Daily store-check task disabled. When ready: `install/setup.sh store` (visibility Private).
+
 ## NEEDS A HUMAN (do these; everything else is done)
 1. Chrome Web Store submission (route c; 1Password CLI has no account, so route a was impossible; route b needs your password and the $5 fee):
    1. Open https://chrome.google.com/webstore/devconsole and sign in with your Google account.
@@ -9,7 +13,7 @@
    5. Privacy tab: single purpose, `storage` justification, "no remote code", data-use boxes, privacy URL https://reedsmoneymaker23.com/predictive-loading/privacy.html (all text in `docs/STORE_LISTING.md`).
    6. Click "Submit for review". The daily task "predictive-loading-webstore-check" (09:08 EST) puts the store link on the site and README once it is live.
 2. Mac install on your own Mac: `brew install questboy23/tap/predictive-loading` (verified from the public tap), then `predictive-loading enable` and type your admin password once. Check later with `predictive-loading stats`.
-3. Chrome install on your own Chrome: download the extension zip from the release, unzip, chrome://extensions, Developer mode on, "Load unpacked".
+3. Chrome install: DONE 2026-11-20 (unpacked, via install/setup.sh chrome).
 4. Safari arm of Route 2 (Mac tool on/off): needs the system DNS switched, so it can only run after step 2.
 5. Optional: configure the 1Password CLI (`op account add`) and create vault "Predictive Loading" with Web Store API client id/secret/refresh token, so future releases can use chrome-webstore-upload-cli.
 

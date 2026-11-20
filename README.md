@@ -22,7 +22,13 @@ Safety: Unbound answers only 127.0.0.1 and ::1, validates DNSSEC. A watchdog res
 
 ## Install (Chrome)
 
-Chrome Web Store: link on https://reedsmoneymaker23.com/predictive-loading/ once review finishes. Until then: download `predictive-loading-extension-1.0.0.zip` from the GitHub release, unzip, open `chrome://extensions`, turn on Developer mode, "Load unpacked".
+Private install into your own Chrome (unpacked, nothing published), with an on-screen guide:
+
+```bash
+install/setup.sh chrome
+```
+
+It copies the extension to `~/Library/Application Support/PredictiveLoading/extension`, opens `chrome://extensions`, and starts a floating guide that reads the screen on this Mac (Vision text recognition), draws a red arrow to the next thing to click, and has Copy / Paste / "Open this folder for me" buttons. Chrome 137+ ignores `--load-extension`, so the two clicks (Load unpacked, Select) stay with you. `install/setup.sh store` walks through a private Chrome Web Store submission; `install/setup.sh mac` turns on the macOS tool. The guide asks once for Screen Recording (arrows) and Accessibility (paste for you); without them it still shows every step.
 
 The popup shows ms saved against a random 20% holdout with n, an on/off switch and "Delete all data".
 
