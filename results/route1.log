@@ -1,0 +1,4 @@
+bench env up: unbound :5300, proxy :1080, daemon True
+round 1 unbound_alone n=499 median 40.3 ms
+round 1 unbound_plus_predictor n=498 median 23.1 ms
+round 1 system_default n=499 median 6.2 ms

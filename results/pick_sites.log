@@ -1,0 +1,54 @@
+1 google.com /intl/en/about/products
+2 cloudflare.com /products/
+3 amazonaws.com /migration-and-modernization/
+skip ezviz7.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://ezviz7.com/
+4 facebook.com /reg/
+5 fbcdn.net /reg/
+skip gstatic.com status 404
+6 microsoft.com /microsoft-365
+skip googleapis.com status 404
+skip youtube.com no safe link
+7 apple.com /us/shop/goto/store
+skip akamai.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamai.net/
+skip hicloudcam.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://hicloudcam.
+8 instagram.com /accounts/password/reset/
+skip akamaiedge.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamaiedge.
+skip linkedin.com status 403
+skip twitter.com status 403
+9 azure.com /en-us/support/
+skip domaincontrol.com page.goto: net::ERR_CONNECTION_REFUSED at https://domaincont
+skip akadns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akadns.net/
+skip googlevideo.com page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://goog
+skip appsflyersdk.com status 403
+skip googletagmanager.com status 404
+skip mail.ru no safe link
+10 triplinkintl.com /en/contact/
+skip cloudfront.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://cloudfront.
+skip office.com no safe link
+skip gwfb.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gwfb.net/
+C
+skip amazon.com no safe link
+skip live.com no safe link
+11 sharepoint.com /en-us/microsoft-365
+skip gtld-servers.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gtld-server
+skip aaplimg.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://aaplimg.com
+12 github.com /platform
+skip cloud.microsoft no safe link
+skip trafficmanager.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://trafficmana
+13 dzen.ru /pogoda/20815
+skip w2rt6byl5nf1opmc-a.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://w2rt6byl5nf
+skip wikipedia.org no safe link
+14 netflix.com /login
+skip apple-dns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://apple-dns.n
+15 fastly.net /resources/report/2026-gartner-magic-quadrant-edge-distribution-platforms
+skip office.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://office.net/
+16 whatsapp.net /calling
+skip lsrelayaccess.com page.goto: net::ERR_CONNECTION_RESET at https://lsrelayacces
+skip bing.com no safe link
+skip googleusercontent.com status 404
+skip x.com status 403
+skip pv-cdn.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://pv-cdn.net/
+17 doubleclick.net /about/
+18 googlesyndication.com /intl/en/about/products
+skip youtu.be no safe link
+skip windows.net page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://wind
