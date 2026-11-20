@@ -1,0 +1,34 @@
+\subsection{Results}
+Deviations from the pre-registration, all logged in \texttt{results/rerun-2026-11-20/deviations.txt}: (i) the repository test suite (about 2 minutes, mostly local CPU) ran on the same machine during E1b; (ii) the disk filled as E1b finished, so the step that copies its output failed and was redone by hand from the same files; no measurement was lost; (iii) E2's 14-day test window spans \C{e2.test_days} calendar days, so the per-day analysis has \C{e2.primary_P_minus_S_per_day.n} pairs, not 14.
+
+\textbf{E1a (live DNS, unpaired, outside the Holm family).} Median lookup time, round 1 (cold) and rounds 2--5 (warm), with 95\% bootstrap intervals:
+\begin{center}\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Arm & Cold median (ms) & Warm median (ms) \\
+\midrule
+Campus resolver (direct) & \C{e1a.cold.system_default.median_ms} [\C{e1a.cold.system_default.median_ci95.lo}, \C{e1a.cold.system_default.median_ci95.hi}] & \C{e1a.warm.system_default.median_ms} [\C{e1a.warm.system_default.median_ci95.lo}, \C{e1a.warm.system_default.median_ci95.hi}] \\
+Unbound alone & \C{e1a.cold.unbound_alone.median_ms} [\C{e1a.cold.unbound_alone.median_ci95.lo}, \C{e1a.cold.unbound_alone.median_ci95.hi}] & \C{e1a.warm.unbound_alone.median_ms} [\C{e1a.warm.unbound_alone.median_ci95.lo}, \C{e1a.warm.unbound_alone.median_ci95.hi}] \\
+Unbound + predictor & \C{e1a.cold.unbound_plus_predictor.median_ms} [\C{e1a.cold.unbound_plus_predictor.median_ci95.lo}, \C{e1a.cold.unbound_plus_predictor.median_ci95.hi}] & \C{e1a.warm.unbound_plus_predictor.median_ms} [\C{e1a.warm.unbound_plus_predictor.median_ci95.lo}, \C{e1a.warm.unbound_plus_predictor.median_ci95.hi}] \\
+\bottomrule
+\end{tabular}
+\end{center}
+The predictor made the local resolver faster than Unbound alone, but on this network the shared campus resolver, kept warm by thousands of users, was faster than either local arm in both phases. A local resolver adds a full recursion path (Unbound forwards to the campus resolver, which is already the fast path), so on a network with a fast, busy shared resolver the Mac tool adds latency it cannot recover by prediction alone.
+
+\textbf{E1b (live API calls, paired).} Over \C{e1b.warm.n} host-round pairs in rounds 2--5 (\C{e1b.dropped_units} units dropped), the Hodges--Lehmann estimate of total request time with the Mac tool on minus off was \C{e1b.warm.hl}\,ms [\C{e1b.warm.ci.lo}, \C{e1b.warm.ci.hi}], Wilcoxon $p=\C{e1b.warm.p}$ (Holm $p=\C{holm.e1b}$), against an off-arm median request of \C{e1b.off_median_ms}\,ms. First-round calls: \C{e1b.cold.hl}\,ms [\C{e1b.cold.ci.lo}, \C{e1b.cold.ci.hi}].
+
+\textbf{E2 (held-out real history).} Over \C{e2.events_test_simulated} test-period lookups (\C{e2.names_measured} measured names; median TTL \C{e2.ttl_median_s}\,s; median campus-resolver latency \C{e2.net_ms_median}\,ms, 90th percentile \C{e2.net_ms_p90}\,ms):
+\begin{center}\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Policy & Cache hit rate & Mean lookup (ms) & Upstream queries per awake hour \\
+\midrule
+S: TTL cache only & \C{e2.hit_rate.S} & \C{e2.mean_ms.S} & \C{e2.upstream_per_awake_hour.S} \\
+U: + Unbound prefetch & \C{e2.hit_rate.U} & \C{e2.mean_ms.U} & \C{e2.upstream_per_awake_hour.U} \\
+P: + predictor & \C{e2.hit_rate.P} & \C{e2.mean_ms.P} & \C{e2.upstream_per_awake_hour.P} \\
+\bottomrule
+\end{tabular}
+\end{center}
+Primary: per day, P minus S was \C{e2.primary_P_minus_S_per_day.hl}\,ms per lookup [\C{e2.primary_P_minus_S_per_day.ci.lo}, \C{e2.primary_P_minus_S_per_day.ci.hi}], faster on every one of the \C{e2.primary_P_minus_S_per_day.n} days (Wilcoxon $p=\C{e2.primary_P_minus_S_per_day.p}$, Holm $p=\C{holm.e2}$). The predictor's own contribution over Unbound's prefetch (P minus U) was \C{e2.P_minus_U_per_day.hl}\,ms [\C{e2.P_minus_U_per_day.ci.lo}, \C{e2.P_minus_U_per_day.ci.hi}]. The effect is reliable and small: the predictor raises the hit rate by about 3.6 points, and each extra hit saves one network lookup of about 6\,ms on this network. The price is upstream traffic: P sends about 2.3 times as many queries per awake hour as S. Because a miss costs the network latency, the absolute saving scales with it (exploratory): at a 30\,ms home-router resolver the same hit-rate gain would save roughly 1\,ms per lookup, and at 100\,ms roughly 3.6\,ms.
+
+\textbf{E3 (Chrome extension under a habit).} \E3RESULT

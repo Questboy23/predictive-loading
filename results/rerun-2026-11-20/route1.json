@@ -1,0 +1,109 @@
+{
+ "names": 500,
+ "rounds": 5,
+ "wait_s": 180,
+ "system_resolver": "network DHCP resolver",
+ "cold": {
+  "system_default": {
+   "n": 498,
+   "median_ms": 29.65,
+   "p75_ms": 64.28,
+   "mean_ms": 69.62,
+   "median_ci95": [
+    27.29,
+    32.79
+   ],
+   "p75_ci95": [
+    53.95,
+    80.0
+   ]
+  },
+  "unbound_alone": {
+   "n": 498,
+   "median_ms": 41.9,
+   "p75_ms": 83.5,
+   "mean_ms": 92.18,
+   "median_ci95": [
+    38.68,
+    47.0
+   ],
+   "p75_ci95": [
+    70.94,
+    90.37
+   ]
+  },
+  "unbound_plus_predictor": {
+   "n": 498,
+   "median_ms": 48.93,
+   "p75_ms": 70.25,
+   "mean_ms": 89.69,
+   "median_ci95": [
+    46.71,
+    51.22
+   ],
+   "p75_ci95": [
+    63.97,
+    80.3
+   ]
+  }
+ },
+ "warm": {
+  "system_default": {
+   "n": 1996,
+   "median_ms": 4.62,
+   "p75_ms": 16.79,
+   "mean_ms": 19.99,
+   "median_ci95": [
+    4.56,
+    4.7
+   ],
+   "p75_ci95": [
+    8.81,
+    17.6
+   ]
+  },
+  "unbound_alone": {
+   "n": 1996,
+   "median_ms": 16.29,
+   "p75_ms": 33.77,
+   "mean_ms": 31.85,
+   "median_ci95": [
+    15.74,
+    16.76
+   ],
+   "p75_ci95": [
+    33.18,
+    34.7
+   ]
+  },
+  "unbound_plus_predictor": {
+   "n": 1993,
+   "median_ms": 12.61,
+   "p75_ms": 27.13,
+   "mean_ms": 31.89,
+   "median_ci95": [
+    11.24,
+    15.17
+   ],
+   "p75_ci95": [
+    25.54,
+    28.88
+   ]
+  }
+ },
+ "daemon_stats": {
+  "n_treat": 5,
+  "n_hold": 1,
+  "mean_ms_treat": 96.28,
+  "mean_ms_hold": 9.81,
+  "ms_saved_per_day": -10375.8,
+  "ci95": [
+   -29632.8,
+   1177.6
+  ],
+  "days": 0.04,
+  "mode": "active",
+  "events": 2558,
+  "bits_per_event": 7.732
+ }
+}

@@ -9,7 +9,7 @@ All timing experiments run on one MacBook (Apple silicon, macOS 26) on a campus 
 
 \textbf{Route 3, API calls.} curl fetches one URL from each of \V{r3.hosts} API hosts, \V{r3.rounds} rounds, with the Mac tool off and on in shuffled order.
 
-\section{Results}
+\section{Results}\label{sec:results}
 \textbf{Route 0 passed.} The mixture's log-loss was lower than order-1 Markov's on \V{r0.wins_markov_bits} of \V{r0.ntraces} traces with the whole 95\% interval below zero, and lower than PPM-C's on \V{r0.wins_ppmc_bits} of \V{r0.ntraces} (Figure~\ref{fig:r0}). On NASA it used \V{r0.nasa_jul95.mixture.bits} bits per event against \V{r0.nasa_jul95.markov1.bits} for Markov-1 and \V{r0.nasa_jul95.ppm_c.bits} for PPM-C. On the recorded Chrome history it guessed the next domain first \V{r0.recorded_chrome_domains.mixture.top1}\% of the time (Markov-1 \V{r0.recorded_chrome_domains.markov1.top1}\%, PPM-C \V{r0.recorded_chrome_domains.ppm_c.top1}\%) and the next path within a site \V{r0.recorded_chrome_paths_per_origin.mixture.top1}\% of the time. Top-1 accuracy is low on the server logs (\V{r0.nasa_jul95.mixture.top1}\% on NASA) because most of their events are first visits.
 
 \begin{figure}[t]

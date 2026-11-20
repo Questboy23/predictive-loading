@@ -1,0 +1,29 @@
+\section{Confirmatory experiments}
+\label{sec:confirm}
+The experiments in Section~\ref{sec:results} were designed before any data existed but were not pre-registered, and one of them (Route~1) has a design flaw described below. This section reports three further experiments whose hypotheses, primary metrics, statistics and exclusion rules were committed to the public repository (\texttt{PREREG.md}, commit \texttt{f830fdd}, 02:38 EST on 20 November 2026) together with the analysis script, before any of their data was collected. The analysis was run once.
+
+\subsection{Statistics}
+Every primary comparison is paired. For a set of paired differences $d_1,\dots,d_n$ (treatment minus control, so negative means faster) we report the Hodges--Lehmann estimate, the median of all Walsh averages $(d_i+d_j)/2$, $i\le j$, which is robust to the heavy right tail of network timings; a 95\% percentile bootstrap interval over pairs (10{,}000 resamples, fixed seed); and a two-sided Wilcoxon signed-rank $p$-value. The three paired primary tests are Holm-corrected as a family. A unit (host-round, test day, site) with any failed measurement in either arm is dropped from both arms; dropped counts are reported. Nothing was stopped early or rerun.
+
+\subsection{E1: live replication on the current network}
+E1 reruns Routes~1 and 3 on Denison campus Wi-Fi, whose DHCP resolver is a shared campus resolver. Because the Mac tool was live on the test machine, the benchmark harness was changed to send its ``network resolver'' arm directly to the DHCP resolver instead of through the system resolver, which by then pointed at the local Unbound. \emph{Disclosure:} E1 started before the pre-registration was written, and per-round medians of its first two rounds had been printed and seen. E1 is therefore a replication with a fixed analysis, not a blind test.
+
+\emph{Design flaw in Route~1.} Name order is shuffled each round, but the same 500 names repeat every 180\,s, which is shorter than many of their TTLs. ``Warm'' rounds therefore mostly measure how long each arm keeps answers cached, and the predictor arm benefits from repeatedly re-fetching a small fixed set. Route~1 and E1a are upper bounds for an unrealistically repetitive workload; E2 is the test that removes this flaw. The E1a script keeps only per-arm summaries, so E1a is reported as unpaired medians and is outside the Holm family. E1b (50 API hosts, 5 rounds, 120\,s apart, host and mode order shuffled) keeps every request and is analysed paired by host and round, using rounds 2--5.
+
+\subsection{E2: trace-driven simulation on held-out real history}
+\emph{Workload.} One person's Chrome history: \C{e2.events_total} page visits to \C{e2.names} distinct host names over 11 weeks, with real timestamps, read in memory only. Each visit is one lookup of its host. Subresource lookups (images, scripts, third-party hosts) are not in the history and are not modelled.
+
+\emph{Split.} Chronological. The predictor learns online from the first visit; only the last 14 days (\C{e2.events_test_simulated} lookups) are scored. No parameter was tuned on the test days.
+
+\emph{Measured inputs.} For each name, the full TTL was taken from the first answer of a freshly started, fully recursive local Unbound with an empty cache (minimum TTL along any CNAME chain), and the network latency as the median of 3 queries to the campus resolver. \C{e2.names_measured} of \C{e2.names} names answered both. A local cache hit costs the measured median time of a cached query to the live local Unbound, \C{e2.local_hit_ms}\,ms.
+
+\emph{Policies.} (S) a plain TTL cache, as macOS keeps; (U) S plus Unbound's prefetch, which refreshes a name queried in the last 10\% of its TTL; (P) U plus the shipped predictor and cost rule, run every 60\,s of trace time while the machine is awake (an awake gap is a gap under 30 minutes between visits), with the daemon's one-hour pending rule and its next-hour look-ahead on wake. The shipped 10\% holdout is off in the simulation. A miss costs the name's measured network latency. Each policy's upstream queries in the test period are counted as its cost.
+
+\emph{Primary metric.} Per test day, mean lookup latency; paired difference P minus S over the 14 days.
+
+\subsection{E3: the Chrome extension under a habit}
+Route~2 gave each site one training visit, far less history than a person builds, so the extension rarely passed its own cost rule. E3 tests the condition the extension is built for: a person who repeatedly takes the same path.
+
+\emph{Design.} The 50 sites of Route~2, each with a home page and one same-site next page. For each site and arm (extension on or off, order random per site), a fresh browser profile runs 8 training visits (load home, read 3\,s, click the next link) and then 6 measured visits. Before each measured visit the proxy drops all connections; the HTTP cache is kept, as a habitual visitor's would be. Chrome for Testing runs through the bench SOCKS proxy with 60\,ms added round-trip time and the campus resolver for DNS in both arms. Four sites run in parallel, each with its own proxy. The extension's 20\% holdout stays on, so the estimate is intention-to-treat: what a user gets from the shipped extension, including the 1 in 5 confident predictions it deliberately does not act on.
+
+\emph{Primary metric.} Per site, the median next-page wait (\texttt{loadEventEnd} minus \texttt{activationStart}) over the 6 measured visits; paired difference on minus off over sites. With 50 pairs the Wilcoxon test has 80\% power at $\alpha=0.05$ for a standardised paired effect of about 0.41. Secondary: the share of measured next pages served preloaded, and the home-page load difference (the extension's own overhead).
