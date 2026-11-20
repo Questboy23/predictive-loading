@@ -331,7 +331,15 @@ final class Guide: NSObject {
             if let acts = s.auto, self.autoBox.state == .on, AXIsProcessTrusted(), !done, self.ticksOnStep >= 2,
                Date().timeIntervalSince(self.lastAuto) > 2.5 {
                 // Keystrokes go to the front app, so only act while Chrome is in front.
-                let chromeFront = NSWorkspace.shared.frontmostApplication?.localizedName?.contains("Chrome") ?? false
+                var front = NSWorkspace.shared.frontmostApplication
+                if front?.processIdentifier == ProcessInfo.processInfo.processIdentifier, // launching made the guide itself frontmost
+                   let p = prevFront, p.localizedName?.contains("Chrome") ?? false, !p.isTerminated {
+                    p.activate()
+                    front = p
+                    self.lastAuto = Date() // let the switch finish before typing
+                    return
+                }
+                let chromeFront = front?.localizedName?.contains("Chrome") ?? false
                 if self.autoIdx < acts.count, chromeFront {
                     let a = acts[self.autoIdx]
                     if a.hasPrefix("clickText:") { // focus a window by clicking its own text first
@@ -393,6 +401,7 @@ guard args.count >= 3, let data = FileManager.default.contents(atPath: args[1]),
     FileHandle.standardError.write("usage: Guide <flows.json> <flow>\n".data(using: .utf8)!)
     exit(2)
 }
+let prevFront = NSWorkspace.shared.frontmostApplication // the app the person was using (Chrome, when setup.sh opens it)
 let app = NSApplication.shared
 app.setActivationPolicy(.accessory)
 let guide = Guide(steps: steps, start: args.count > 3 ? (Int(args[3]) ?? 1) - 1 : 0) // optional 3rd arg: start at step N
