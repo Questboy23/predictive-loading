@@ -9,5 +9,6 @@ R=${1:-$V}  # release version for the source tarball
 git archive --format=tar.gz --prefix="predictive-loading-$R/" -o "dist/predictive-loading-$R.tar.gz" HEAD
 cp paper/paper.pdf dist/paper.pdf
 cp paper/plain.pdf dist/plain.pdf
+(cd paper && tar czf ../dist/arxiv-source.tar.gz paper.tex abstract.tex conclusion.tex confirm_method.tex confirm_numbers.tex confirm_results.tex diagrams.tex numbers.tex results.tex fig_route0.pdf fig_route1.pdf fig_route2.pdf)
 (cd dist && shasum -a 256 * > SHA256SUMS)
 cat dist/SHA256SUMS

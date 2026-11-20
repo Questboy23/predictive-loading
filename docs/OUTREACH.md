@@ -67,7 +67,27 @@ Title: Show HN: Predictive Loading, a per-user next-page and DNS predictor with 
 Body: A Mac tool keeps a local DNS cache warm with names you are likely to need next hour, and a Chrome extension writes Speculation Rules for the link you are likely to click. Both learn only from your own history, kept on your machine as hashes. I pre-registered the tests: the DNS predictor gives a small, reliable gain on replayed history (hit rate 0.754 to 0.790, 0.22 ms per lookup), and loses to a fast campus resolver live. After an 8-visit habit, the extension prefetched 65% of next pages; the next-page estimate was about 100 ms faster, but its interval includes zero. Code, data, paper: https://reedsmoneymaker23.com/predictive-loading/
 
 ### 4. arXiv cs.NI
-Upload paper/paper.pdf with source. A first-time cs.NI submitter needs an endorsement: email an author of a recent cs.NI DNS-measurement paper with the abstract and ask for endorsement through arxiv.org/auth/endorse.
+Upload `dist/arxiv-source.tar.gz` (built by packaging/build_release.sh; pdflatex-safe, ASCII only, compiles to the 11-page paper.pdf). Category cs.NI, cross-list cs.LG. License CC BY 4.0.
+
+A first-time submitter needs an endorsement. Starting the submission makes arXiv show a 6-character endorsement code. Send it to one endorser below.
+
+Endorser candidates (recent cs.NI DNS papers, found via the arXiv API on 2026-11-20):
+1. Fabian E. Bustamante (Northwestern): "Who Resolves Your DNS?", arXiv:2608.29371. Closest topic: resolver performance and measurement.
+2. Thomas C. Schmidt or Matthias Waehlisch: arXiv:2606.10097 and arXiv:2510.18572, DNS resolvers and forwarders.
+3. Taejoong Chung (Virginia Tech): arXiv:2609.14210, DNS measurement.
+
+Endorsement email (fill in CODE):
+Subject: arXiv cs.NI endorsement request: pre-registered study of history-driven DNS prefetch
+
+Dear Professor Bustamante,
+
+I read "Who Resolves Your DNS?" and am submitting my first cs.NI paper, a pre-registered measurement of per-user DNS and page prefetching. On 14 held-out days of real history, a learned predictor raised a local resolver's hit rate from 0.754 to 0.790 (Holm p = 0.0002). A live test against a fast campus resolver found no gain, and the paper reports that too.
+
+Paper and data: https://github.com/Questboy23/predictive-loading (paper/paper.pdf)
+If it looks like a fit for cs.NI, could you endorse me with code CODE at https://arxiv.org/auth/endorse ? No is a fine answer.
+
+Thank you,
+Reed
 
 ### 5. PAM 2027 / IMC short paper
 Reformat paper.tex to the venue template (PAM uses Springer LNCS, 12 pages). Frame it as a measurement paper: pre-registered, one user, negative live result and positive replay result.
