@@ -121,3 +121,33 @@ skip shiabank.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://shiabank.co
 skip chatgpt.com status 403
 41 europa.eu /cookies_en
 skip reddit.com no safe link
+42 lencr.org /docs/
+43 yandex.ru /news/rubric/quotes/0
+skip gvt2.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://gvt2.com/
+C
+44 bit.ly /pages/pricing/black-friday/
+skip aliyuncs.com status 404
+skip azurefd.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://azurefd.net
+skip yandex.net no safe link
+skip root-servers.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://root-server
+skip fastly-edge.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://fastly-edge
+skip amazon.dev page.goto: net::ERR_NAME_NOT_RESOLVED at https://amazon.dev/
+skip webex.com status 403
+45 samsung.com /us/tvs/micro-rgb/85-inch-micro-rgb-4k-tv-r95h-sku-mrn85r95hafxza/
+skip registrar-servers.com no safe link
+skip openai.com status 403
+46 adobe.io /apis
+skip virginm.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://virginm.net
+skip office365.com status 403
+skip dotaplabs.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://dotaplabs.n
+skip github.io page.$$eval: Execution context was destroyed, most likely be
+skip nih.gov status 403
+47 windows.com /en-us/windows
+48 dropbox.com /dropbox
+skip ytimg.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://ytimg.com/
+
+skip static.microsoft page.goto: net::ERR_NAME_NOT_RESOLVED at https://static.micr
+skip outlook.com no safe link
+49 android.com /gemini-intelligence/
+skip nflxso.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://nflxso.net/
+50 cloudflare-dns.com /family/

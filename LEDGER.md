@@ -20,6 +20,11 @@ Design changes made before the full run (both found on a 30-user smoke run): esc
 - Chrome Web Store $5 fee: not paid. Global rule says never spend money, and the agent may not type card data. Route (c).
 - Recorded session = Reed's own Chrome history, read locally and hashed in memory, never written to disk or git.
 
-## Status
+## Status (2026-11-19 22:58 EST)
+- Done and tested: shared predictor (Py+JS, parity 10,000 events identical), 13 unit tests, Mac daemon + CLI + Unbound config (12 safety scenarios pass), extension (e2e 50 loads, 0 extension-origin requests, 0 action-link requests), security gate 9/9, Homebrew formula builds and `brew test` passes from a local tap.
+- Route 0 done (PASS). Route 1 done. Route 3, Route 2 (6 parallel browsertime sessions), pages benchmark running.
+- Route 2 design: no root available, so Chrome for Testing goes through a local SOCKS5 proxy that adds Wi-Fi RTT and resolves names with the system resolver (Mac tool off) or Unbound + predictor (on). Safari arm needs system DNS change: human step.
 
 ## Blockers / needs a human
+- Web Store route (a) impossible: 1Password CLI has no account configured on this Mac (`op whoami`: "No accounts configured"). Route (b) blocked: Google asked for a password re-sign-in on the dashboard, and the $5 fee conflicts with the global never-spend rule. Route (c) taken.
+- macOS live install needs Reed's admin password (`predictive-loading enable` shows one macOS prompt).

@@ -1,0 +1,10 @@
+{"site":"cloudflare.com","method":"extension","speculativeRequests":2,"url":"https://www.cloudflare.com/products/","waited":224.90000000596046,"activationStart":0,"deliveryType":"navigational-prefetch"}
+{"site":"cloudflare.com","method":"default","speculativeRequests":0,"url":"https://www.cloudflare.com/products/","waited":2462.100000023842,"activationStart":0,"deliveryType":""}
+{"site":"cloudflare.com","method":"quicklink","speculativeRequests":17,"url":"https://www.cloudflare.com/products/","waited":1544,"activationStart":0,"deliveryType":"cache"}
+{"site":"cloudflare.com","method":"instantpage","speculativeRequests":1,"url":"https://www.cloudflare.com/products/","waited":1408.800000011921,"activationStart":0,"deliveryType":"cache"}
+{"site":"amazonaws.com","method":"default","speculativeRequests":0,"url":"https://aws.amazon.com/migration-and-modernization/","waited":2288,"activationStart":0,"deliveryType":""}
+{"site":"amazonaws.com","method":"instantpage","speculativeRequests":0,"url":"https://aws.amazon.com/migration-and-modernization/","waited":2307.0999999940395,"activationStart":0,"deliveryType":""}
+{"site":"amazonaws.com","method":"extension","speculativeRequests":1,"url":"https://aws.amazon.com/migration-and-modernization/","waited":1101.0999999940395,"activationStart":0,"deliveryType":"navigational-prefetch"}
+{"site":"amazonaws.com","method":"quicklink","speculativeRequests":7,"url":"https://aws.amazon.com/migration-and-modernization/","waited":1623.800000011921,"activationStart":0,"deliveryType":"cache"}
+{"site":"facebook.com","method":"default","speculativeRequests":0,"url":"https://www.facebook.com/reg/","waited":512.5,"activationStart":0,"deliveryType":""}
+{"site":"facebook.com","method":"extension","speculativeRequests":1,"url":"https://www.facebook.com/reg/","waited":510.30000001192093,"activationStart":0,"deliveryType":""}

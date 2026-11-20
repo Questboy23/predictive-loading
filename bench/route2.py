@@ -9,6 +9,7 @@ import os
 import random
 import subprocess
 import sys
+import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "bench"))
@@ -23,9 +24,10 @@ EXT = os.path.join(ROOT, "extension")
 OUT = os.path.join(ROOT, "results", "route2.jsonl")
 
 
-def session(rtt, ext, n, seed):
-    socksproxy.send(env.PROXY_PORT, "RTT %d" % rtt)
-    args = ["--proxy-server=socks5://127.0.0.1:%d" % env.PROXY_PORT,
+def session(rtt, ext, n, seed, port=None):
+    port = port or env.PROXY_PORT
+    socksproxy.send(port, "RTT %d" % rtt)
+    args = ["--proxy-server=socks5://127.0.0.1:%d" % port,
             "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1", "--no-first-run"]
     if ext == "on":
         args += ["--load-extension=" + EXT, "--disable-extensions-except=" + EXT]
@@ -37,9 +39,8 @@ def session(rtt, ext, n, seed):
         cmd.append("--chrome.args=" + a)
     cmd.append(os.path.join(ROOT, "bench", "route2_script.cjs"))
     e = dict(os.environ, R2_SITES=os.path.join(ROOT, "bench", "sites.json"), R2_OUT=OUT, R2_EXT=ext,
-             R2_RTT=str(rtt), R2_N=str(n), R2_SEED=str(seed), R2_CTL=str(env.PROXY_PORT + 1))
-    r = subprocess.run(cmd, env=e, capture_output=True, text=True)
-    print("session rtt=%d ext=%s exit=%d %s" % (rtt, ext, r.returncode, r.stdout[-300:].replace("\n", " ")), flush=True)
+             R2_RTT=str(rtt), R2_N=str(n), R2_SEED=str(seed), R2_CTL=str(port + 1))
+    return subprocess.Popen(cmd, env=e, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def main():
@@ -49,10 +50,25 @@ def main():
     env.start(with_daemon=True)
     sessions = [(rtt, ext) for rtt in PROFILES.values() for ext in ("off", "on")]
     random.Random(3).shuffle(sessions)
+    # All six sessions run at once, each through its own proxy (own RTT), sharing
+    # one Unbound + daemon. Concurrency adds the same network load to every cell.
+    proxies, procs = [], []
     try:
         for i, (rtt, ext) in enumerate(sessions):
-            session(rtt, ext, n, seed=100 + i)
+            port = 1300 + 10 * i
+            proxies.append(subprocess.Popen([sys.executable, os.path.join(ROOT, "bench", "socksproxy.py"), str(port), str(env.UB_PORT)]))
+            for _ in range(50):
+                try:
+                    socksproxy.send(port, "STATS")
+                    break
+                except OSError:
+                    time.sleep(0.2)
+            procs.append((rtt, ext, session(rtt, ext, n, seed=100 + i, port=port)))
+        for rtt, ext, p in procs:
+            print("session rtt=%d ext=%s exit=%d" % (rtt, ext, p.wait()), flush=True)
     finally:
+        for p in proxies:
+            p.terminate()
         env.stop()
 
 

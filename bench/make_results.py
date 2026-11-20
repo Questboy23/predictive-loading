@@ -242,7 +242,7 @@ def pages():
         if not cell:
             continue
         xs = [r["waited"] for r in cell]
-        pre = sum(1 for r in cell if r["activationStart"] > 0 or r["deliveryType"] == "navigational-prefetch")
+        pre = sum(1 for r in cell if r["activationStart"] > 0 or r["deliveryType"] in ("navigational-prefetch", "cache"))
         lo, hi = boot(xs)
         kv("pb.%s.n" % m, str(len(cell)))
         kv("pb.%s.med" % m, f(statistics.median(xs), 0))
