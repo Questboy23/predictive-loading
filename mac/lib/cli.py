@@ -103,6 +103,8 @@ def stats():
         s["ms_saved_per_day"], s["ci95"][0], s["ci95"][1], s["days"]))
     print("lookup time, predicted names: %.1f ms prefetched (n=%d) vs %.1f ms random 10%% holdout (n=%d)" % (
         s["mean_ms_treat"], s["n_treat"], s["mean_ms_hold"], s["n_hold"]))
+    if min(s["n_treat"], s["n_hold"]) < 30:
+        print("too few measurements to trust yet (need 30 on each side); check again in a day")
     return 0
 
 
