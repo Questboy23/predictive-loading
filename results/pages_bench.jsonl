@@ -97,3 +97,5 @@
 {"site":"roblox.com","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.roblox.com/\nCall log:\n  - navigating to \"https://www.roblox.com/\", waiting until \"load\"\n"}
 {"site":"roblox.com","method":"default","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.roblox.com/\nCall log:\n  - navigating to \"https://www.roblox.com/\", waiting until \"load\"\n"}
 {"site":"roblox.com","method":"quicklink","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.roblox.com/\nCall log:\n  - navigating to \"https://www.roblox.com/\", waiting until \"load\"\n"}
+{"site":"roblox.com","method":"extension","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://www.roblox.com/\nCall log:\n  - navigating to \"https://www.roblox.com/\", waiting until \"load\"\n"}
+{"site":"vimeo.com","method":"instantpage","error":"page.goto: net::ERR_SOCKS_CONNECTION_FAILED at https://vimeo.com/\nCall log:\n  - navigating to \"https://vimeo.com/\", waiting until \"load\"\n"}
