@@ -1,8 +1,16 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Predictive Loading</title><link rel="stylesheet" href="style.css"></head><body><main>
 <h1>Predictive Loading</h1>
 <p>Predicts the next thing you will load from your own history and does the waiting early: DNS lookups for every app on your Mac, and the next page on each site in Chrome. Nothing leaves your device.</p>
-<p class="links"><a href="https://github.com/Questboy23/predictive-loading/releases/latest">Download (latest release)</a> <a href="plain.pdf">Plain-language explainer (PDF)</a> <a href="paper.pdf">Paper (PDF)</a> <a href="privacy.html">Privacy policy</a> <a href="https://github.com/Questboy23/predictive-loading">Source</a></p>
+<p class="links"><a href="#download">Download</a> <a href="plain.pdf">Plain-language explainer (PDF)</a> <a href="paper.pdf">Paper (PDF)</a> <a href="privacy.html">Privacy policy</a> <a href="https://github.com/Questboy23/predictive-loading">Source</a></p>
 <p>Chrome Web Store: in review (install from the GitHub release meanwhile)</p>
+<h2 id="download">Download</h2>
+<p>Files served from this site (same files as the <a href="https://github.com/Questboy23/predictive-loading/releases/latest">GitHub release</a>; check them against <a href="download/SHA256SUMS">SHA256SUMS</a>):</p>
+<ul>
+<li><a href="download/predictive-loading-extension.zip">Chrome extension (zip)</a>: unzip, open chrome://extensions, turn on Developer mode, Load unpacked.</li>
+<li><a href="download/predictive-loading-source.tar.gz">Full source (tar.gz)</a>: Mac tool, extension, setup guide, tests, benchmarks.</li>
+<li><a href="plain.pdf">Plain-language explainer (PDF)</a> and <a href="paper.pdf">full paper (PDF)</a>.</li>
+</ul>
+<p>Security: every push is scanned by GitHub CodeQL and OpenSSF Scorecard, with secret scanning and Dependabot on; releases also pass gitleaks, TruffleHog, Semgrep, Bandit, ShellCheck, OSV-Scanner and Grype. See <a href="https://github.com/Questboy23/predictive-loading/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 <h2>Install on macOS</h2>
 <pre>brew install questboy23/tap/predictive-loading
 predictive-loading enable
