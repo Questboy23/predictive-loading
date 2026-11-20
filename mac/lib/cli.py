@@ -20,7 +20,7 @@ import daemon  # noqa: E402
 
 LABELS = ("org.predictive-loading.unbound", "org.predictive-loading.daemon")
 LD = os.environ.get("PL_LAUNCHD_DIR", "/Library/LaunchDaemons")
-BREW = os.environ.get("HOMEBREW_PREFIX", "/opt/homebrew")
+BREW = "/opt/homebrew" if os.path.isdir("/opt/homebrew") else "/usr/local"
 
 
 def plist_path(label):
@@ -39,7 +39,7 @@ def as_root(sub):
 
 def write_plists():
     env = {"PATH": "%s/bin:%s/sbin:/usr/bin:/bin:/usr/sbin:/sbin" % (BREW, BREW), "PL_DATA": daemon.DATA}
-    unbound = {"Label": LABELS[0], "ProgramArguments": [shutil.which("unbound") or BREW + "/sbin/unbound",
+    unbound = {"Label": LABELS[0], "ProgramArguments": [BREW + "/sbin/unbound",
                                                          "-d", "-c", daemon.path("unbound.conf")],
                "RunAtLoad": True, "KeepAlive": True, "EnvironmentVariables": env}
     dmn = {"Label": LABELS[1], "ProgramArguments": [sys.executable, os.path.join(HERE, "daemon.py")],
@@ -54,11 +54,11 @@ def write_plists():
 def root_main(sub):
     if sub == "enable":
         os.makedirs(daemon.DATA, mode=0o700, exist_ok=True)
-        os.chmod(daemon.DATA, 0o700)
+        os.chmod(daemon.DATA, 0o700)  # nosemgrep: insecure-file-permissions  (owner-only directory)
         daemon.snapshot_original()
         daemon.render_config(daemon.network_resolvers())
-        subprocess.run([shutil.which("unbound-anchor") or BREW + "/sbin/unbound-anchor",
-                        "-a", daemon.path("root.key")])  # exit 1 just means "created"
+        anchor = [BREW + "/sbin/unbound-anchor", "-a", daemon.path("root.key")]
+        subprocess.run(anchor)  # nosemgrep: dangerous-subprocess-use-tainted-env-args  (exit 1 just means "created")
         for name in ("unbound.log", "daemon.out"):
             fd = os.open(daemon.path(name), os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
             os.close(fd)

@@ -25,9 +25,8 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "predictor"))
 import dnsq  # noqa: E402
 from predictor import Predictor, should_act  # noqa: E402
 
-DATA = os.environ.get("PL_DATA", "/opt/homebrew/var/predictive-loading")
+DATA = os.environ.get("PL_DATA", ("/opt/homebrew" if os.path.isdir("/opt/homebrew") else "/usr/local") + "/var/predictive-loading")
 PORT = int(os.environ.get("PL_PORT", "53"))
-UNBOUND_CONTROL = os.environ.get("PL_UNBOUND_CONTROL", "unbound-control")
 CAPTIVE_URL = os.environ.get("PL_CAPTIVE_URL", "http://captive.apple.com/hotspot-detect.html")
 TICK = float(os.environ.get("PL_TICK", "2"))
 CYCLE = float(os.environ.get("PL_CYCLE", "60"))
@@ -133,9 +132,10 @@ def captive_ok():
 # ---------------- Unbound ----------------
 
 def ctl(*args, stdin=None):
-    cmd = [UNBOUND_CONTROL, "-c", path("unbound.conf"), *args]
+    cmd = ["unbound-control", "-c", path("unbound.conf"), *args]
     try:
-        return subprocess.run(cmd, input=stdin, capture_output=True, text=True, timeout=30).stdout
+        # list form, no shell; PL_DATA only moves the data directory (tests use a temp dir)
+        return subprocess.run(cmd, input=stdin, capture_output=True, text=True, timeout=30).stdout  # nosemgrep: dangerous-subprocess-use-tainted-env-args
     except (OSError, subprocess.TimeoutExpired):
         return ""
 

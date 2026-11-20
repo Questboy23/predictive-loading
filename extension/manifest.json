@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Predictive Loading",
+  "version": "1.0.0",
+  "description": "Learns which page you open next on each site from your own history and loads it early. No network calls, no tracking.",
+  "permissions": ["storage"],
+  "incognito": "not_allowed",
+  "content_security_policy": {
+    "extension_pages": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["predictor.js", "sha256.js", "linksafety.js", "content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "action": { "default_popup": "popup.html", "default_title": "Predictive Loading", "default_icon": {"16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png"} },
+  "icons": {"16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png"}
+}

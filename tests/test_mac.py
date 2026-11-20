@@ -76,7 +76,7 @@ for n, body in FAKE_SCRIPTS.items():
     p = os.path.join(BIN, n)
     with open(p, "w") as f:
         f.write(body)
-    os.chmod(p, 0o755)
+    os.chmod(p, 0o700)  # nosemgrep: insecure-file-permissions  (owner-only fake tool, needs exec bit)
 
 
 class Captive(http.server.BaseHTTPRequestHandler):

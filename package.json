@@ -1,0 +1,12 @@
+{
+  "name": "predictive-loading",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "node tests/parity.test.js && node tests/links.test.js && node tests/extension_e2e.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}
