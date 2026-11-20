@@ -7,7 +7,7 @@ set -u
 cd "$(dirname "$0")/.." || exit 99
 BIN="${1:-/tmp/guide-test}"
 SUP="$HOME/Library/Application Support/PredictiveLoading"
-CFT=$(ls -d "$HOME"/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/"Google Chrome for Testing.app" | tail -1)
+CFT=$(ls -d "${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/pl-playwright}"/chromium-*/chrome-mac-arm64/"Google Chrome for Testing.app" "$HOME"/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/"Google Chrome for Testing.app" 2>/dev/null | head -1)
 idle() { ioreg -c IOHIDSystem | awk '/HIDIdleTime/ {print int($NF/1000000000); exit}'; }
 # Away = no input for 5 min and no video or audio playing (watching counts as present).
 away() { [ -n "${NOW:-}" ] && [ "$(idle)" -ge 20 ] && return 0; [ "$(idle)" -ge 300 ] && ! pmset -g assertions | grep -qE "Video Wake Lock|Playing audio"; }

@@ -1,2 +1,3 @@
 DEVIATION 02:45-02:47 EST: tests/run_all.sh (unit tests + security scans, local CPU, few network calls) ran on the same Mac during E1b.
 DEVIATION: disk filled (ENOSPC) at about 02:54 EST as E1b finished; the copy step failed and was redone by hand from the same files at 02:57. No measurement was lost (route3.json written before the failure).
+(iv) E3 attempt 1 (02:56-03:04 EST) is void: the Playwright Chromium in ~/Library/Caches/ms-playwright was deleted mid-run (macOS cache purge under low disk), so 85 of 165 rows are launch errors. Its file is kept as habit_attempt1_invalid.jsonl and was not analysed. Chromium was reinstalled under ~/.cache/pl-playwright and E3 was rerun in full from 03:06 EST with the same code, sites and seeds.
