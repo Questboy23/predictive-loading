@@ -27,7 +27,7 @@ TMP = tempfile.mkdtemp(prefix="pl-mac-")
 DATA = os.path.join(TMP, "data")
 FAKE = os.path.join(TMP, "fake")
 BIN = os.path.join(TMP, "bin")
-PORT = 5300
+PORT = 5399  # away from the bench environment's 5300
 os.makedirs(FAKE)
 os.makedirs(BIN)
 
@@ -154,6 +154,8 @@ class Unbound:
 
     @classmethod
     def start(cls):
+        if daemon.alive():
+            raise RuntimeError("another resolver already answers on port %d" % PORT)
         cls.proc = subprocess.Popen(["unbound", "-d", "-c", daemon.path("unbound.conf")],
                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         for _ in range(50):
@@ -327,6 +329,32 @@ class MacSafety(unittest.TestCase):
         Unbound.start()
         daemon.ctl("load_cache", stdin=open(daemon.path("cache.dump")).read())
         self.assertIn("example.com", daemon.ctl("dump_cache"))
+
+    def test_12_health_check_after_version_change(self):
+        self.d.st["versions"] = "15.0|Version 1.0.0"  # pretend macOS/Unbound were updated
+        self.d.cycle()
+        self.assertEqual(self.d.st["health"], {"local": True, "resolve": True, "dnssec": True})
+        self.assertNotEqual(self.d.st["versions"], "15.0|Version 1.0.0")
+        self.assertEqual(self.d.mode, "active")
+
+    def test_13_wake_refreshes_next_hour(self):
+        for n in ["example.com", "example.org", "iana.org"] * 3:
+            dnsq.query(n, "A", "127.0.0.1", PORT, timeout=5)
+        self.d.cycle()
+        self.d.refresh_due = False
+        self.d.last_wall -= 3600  # a one-hour gap between ticks = the Mac slept
+        self.d.tick()
+        self.assertEqual(self.d.mode, "active")  # captive check passed again
+        self.assertTrue(self.d.refresh_due)
+        calls = []
+        orig = self.d.pred.predict
+        self.d.pred.predict = lambda h, k=1: calls.append(h) or orig(h, k)
+        self.d.cycle()
+        self.d.pred.predict = orig
+        import time as _t
+        hour = _t.localtime().tm_hour
+        self.assertIn((hour + 1) % 24, calls)  # next hour's domains were included
+        self.assertFalse(self.d.refresh_due)
 
     def test_99_uninstall_restores_exactly_and_deletes(self):
         import cli

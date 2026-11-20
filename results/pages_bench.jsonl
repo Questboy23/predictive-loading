@@ -8,3 +8,12 @@
 {"site":"amazonaws.com","method":"quicklink","speculativeRequests":7,"url":"https://aws.amazon.com/migration-and-modernization/","waited":1623.800000011921,"activationStart":0,"deliveryType":"cache"}
 {"site":"facebook.com","method":"default","speculativeRequests":0,"url":"https://www.facebook.com/reg/","waited":512.5,"activationStart":0,"deliveryType":""}
 {"site":"facebook.com","method":"extension","speculativeRequests":1,"url":"https://www.facebook.com/reg/","waited":510.30000001192093,"activationStart":0,"deliveryType":""}
+{"site":"facebook.com","method":"instantpage","speculativeRequests":0,"url":"https://www.facebook.com/reg/","waited":458.59999999403954,"activationStart":0,"deliveryType":""}
+{"site":"facebook.com","method":"quicklink","speculativeRequests":7,"url":"https://www.facebook.com/reg/","waited":367.5,"activationStart":0,"deliveryType":""}
+{"site":"fbcdn.net","method":"instantpage","speculativeRequests":0,"url":"https://www.facebook.com/reg/","waited":358.19999998807907,"activationStart":0,"deliveryType":""}
+{"site":"fbcdn.net","method":"default","speculativeRequests":0,"url":"https://www.facebook.com/reg/","waited":465.30000001192093,"activationStart":0,"deliveryType":""}
+{"site":"fbcdn.net","method":"extension","speculativeRequests":1,"url":"https://www.facebook.com/reg/","waited":452.09999999403954,"activationStart":0,"deliveryType":""}
+{"site":"fbcdn.net","method":"quicklink","speculativeRequests":7,"url":"https://www.facebook.com/reg/","waited":426.90000000596046,"activationStart":0,"deliveryType":""}
+{"site":"microsoft.com","method":"default","speculativeRequests":0,"url":"https://www.microsoft.com/en-us/windows/","waited":6704.9000000059605,"activationStart":0,"deliveryType":""}
+{"site":"microsoft.com","method":"quicklink","speculativeRequests":15,"url":"https://www.microsoft.com/en-us/windows/","waited":3284.800000011921,"activationStart":0,"deliveryType":""}
+{"site":"microsoft.com","method":"instantpage","speculativeRequests":1,"url":"https://www.microsoft.com/en-us/windows/","waited":2182.7999999821186,"activationStart":0,"deliveryType":""}
