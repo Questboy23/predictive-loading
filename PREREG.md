@@ -1,4 +1,4 @@
-# Pre-registration: confirmatory experiments (written 2026-11-20 02:45 EST, before E2 and E3 ran)
+# Pre-registration: confirmatory experiments (written 2026-11-20 02:38 EST, before E2 and E3 ran)
 
 Committed to git before any E2 or E3 data exists. Analysis scripts are committed with this file and run once on the final data. Anything not listed here is reported as exploratory.
 
