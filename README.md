@@ -28,7 +28,11 @@ Private install into your own Chrome (unpacked, nothing published), with an on-s
 install/setup.sh chrome
 ```
 
-It copies the extension to `~/Library/Application Support/PredictiveLoading/extension`, opens `chrome://extensions`, and starts a floating guide that reads the screen on this Mac (Vision text recognition), draws a red arrow to the next thing to click, and has Copy / Paste / "Open this folder for me" buttons. Chrome 137+ ignores `--load-extension`, so the two clicks (Load unpacked, Select) stay with you. `install/setup.sh store` walks through a private Chrome Web Store submission; `install/setup.sh mac` turns on the macOS tool. The guide asks once for Screen Recording (arrows) and Accessibility (paste for you); without them it still shows every step.
+It copies the extension to `~/Library/Application Support/PredictiveLoading/extension`, opens `chrome://extensions`, and starts a floating guide that reads the screen on this Mac (Vision text recognition), draws a red arrow to the next thing to click, and has Copy / Paste / "Open this folder for me" buttons. Chrome 137+ ignores `--load-extension`, so the guide does those clicks for you when "Do the clicks for me" is ticked (it needs Accessibility permission once), and closes itself when the extension shows up on the Extensions page. Without the permissions it still shows every step with arrows and Copy buttons.
+
+- `install/setup.sh mac` installs and turns on the macOS tool by itself; you type your Mac password once.
+- `install/setup.sh all` runs chrome, then mac.
+- `install/setup.sh store` walks through a private Chrome Web Store submission (visibility Private).
 
 The popup shows ms saved against a random 20% holdout with n, an on/off switch and "Delete all data".
 
