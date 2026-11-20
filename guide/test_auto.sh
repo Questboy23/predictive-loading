@@ -15,7 +15,12 @@ python3 guide/make_flows.py "$SUP" >/dev/null
 P=$(mktemp -d /tmp/pl-cft.XXXX)
 open -na "$CFT" --args --user-data-dir="$P" --no-first-run --window-position=0,30 --window-size=1100,800 chrome://extensions
 sleep 5
-osascript -e 'tell application "Google Chrome for Testing" to activate'
+front() { osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null; }
+for _ in 1 2 3 4 5; do
+  open -a "$CFT"; osascript -e 'tell application "Google Chrome for Testing" to activate' 2>/dev/null; sleep 2
+  front | grep -q "Chrome for Testing" && break
+done
+front | grep -q "Chrome for Testing" || { echo "SKIP: test Chrome would not come to the front ($(front))"; osascript -e 'tell application "Google Chrome for Testing" to quit'; exit 2; }
 "$BIN" "$SUP/flows.json" chrome >/dev/null 2>&1 &
 G=$!
 ok=0
