@@ -10,7 +10,7 @@ SUP="$HOME/Library/Application Support/PredictiveLoading"
 CFT=$(ls -d "$HOME"/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/"Google Chrome for Testing.app" | tail -1)
 idle() { ioreg -c IOHIDSystem | awk '/HIDIdleTime/ {print int($NF/1000000000); exit}'; }
 # Away = no input for 5 min and no video or audio playing (watching counts as present).
-away() { [ "$(idle)" -ge 300 ] && ! pmset -g assertions | grep -qE "Video Wake Lock|Playing audio"; }
+away() { [ -n "${NOW:-}" ] && [ "$(idle)" -ge 20 ] && return 0; [ "$(idle)" -ge 300 ] && ! pmset -g assertions | grep -qE "Video Wake Lock|Playing audio"; }
 for _ in $(seq 1 "${WAIT_MIN:-360}"); do away && break; sleep 60; done
 away || { echo "SKIP: Mac never free for 5 min"; exit 2; }
 python3 guide/make_flows.py "$SUP" >/dev/null
@@ -23,7 +23,7 @@ for _ in 1 2 3 4 5; do
   front | grep -q "Chrome for Testing" && break
 done
 front | grep -q "Chrome for Testing" || { echo "SKIP: test Chrome would not come to the front ($(front))"; osascript -e 'tell application "Google Chrome for Testing" to quit'; exit 2; }
-"$BIN" "$SUP/flows.json" chrome >/dev/null 2>&1 &
+PLGUIDE_DEBUG=1 "$BIN" "$SUP/flows.json" chrome >/dev/null 2>/tmp/pl-guide-trace.log &
 G=$!
 ok=0
 for t in $(seq 1 30); do

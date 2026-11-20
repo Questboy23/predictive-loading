@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Predictive Loading</title><link rel="stylesheet" href="style.css"></head><body><main>
 <h1>Predictive Loading</h1>
 <p>Predicts the next thing you will load from your own history and does the waiting early: DNS lookups for every app on your Mac, and the next page on each site in Chrome. Nothing leaves your device.</p>
-<p class="links"><a href="https://github.com/Questboy23/predictive-loading/releases/tag/v1.0">GitHub release v1.0</a> <a href="paper.pdf">Paper (PDF)</a> <a href="privacy.html">Privacy policy</a> <a href="https://github.com/Questboy23/predictive-loading">Source</a></p>
+<p class="links"><a href="https://github.com/Questboy23/predictive-loading/releases/latest">Download (latest release)</a> <a href="plain.pdf">Plain-language explainer (PDF)</a> <a href="paper.pdf">Paper (PDF)</a> <a href="privacy.html">Privacy policy</a> <a href="https://github.com/Questboy23/predictive-loading">Source</a></p>
 <p>Chrome Web Store: in review (install from the GitHub release meanwhile)</p>
 <h2>Install on macOS</h2>
 <pre>brew install questboy23/tap/predictive-loading
@@ -9,7 +9,9 @@ predictive-loading enable
 predictive-loading stats</pre>
 <p><code>predictive-loading uninstall</code> restores your DNS settings exactly and deletes all data.</p>
 <h2>Install in Chrome</h2>
-<p>From the Chrome Web Store once approved, or download the extension zip from the <a href="https://github.com/Questboy23/predictive-loading/releases/tag/v1.0">release</a>, unzip, open chrome://extensions, turn on Developer mode, and choose Load unpacked. Permission requested: storage only.</p>
+<pre>git clone https://github.com/Questboy23/predictive-loading
+predictive-loading/install/setup.sh chrome</pre>
+<p>A guide window opens beside Chrome, points at each button, and can do the clicks for you (Extensions page, Developer mode, Load unpacked, pick the folder). Or by hand: download the extension zip from the <a href="https://github.com/Questboy23/predictive-loading/releases/latest">latest release</a>, unzip, open chrome://extensions, turn on Developer mode, and choose Load unpacked. Permission requested: storage only.</p>
 <h2>Measured results</h2>
 <p>Offline replay: the predictor's log-loss beat an order-1 Markov baseline on 6 of 6 traces. On recorded Chrome history it guessed the next domain correctly 31.5% of the time.</p>
 <p>In the 50-site Chrome test below, each site had one training visit; the extension rarely passed its own threshold and showed no page-load gain. API calls through the Mac tool were 8.81 ms faster per call after the first round and slower on the first call (paired difference -9.96 ms).</p>

@@ -123,7 +123,7 @@ def network_fingerprint():
 
 def captive_ok():
     try:
-        with urllib.request.urlopen(CAPTIVE_URL, timeout=3) as r:  # nosec B310: fixed http URL by design
+        with urllib.request.urlopen(CAPTIVE_URL, timeout=3) as r:  # nosec B310 nosemgrep: fixed http URL by design
             return b"Success" in r.read(2048)
     except OSError:
         return False

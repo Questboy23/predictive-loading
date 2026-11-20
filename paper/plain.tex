@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,patterns}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=3pt}
+\input{numbers.tex}
+\input{diagrams.tex}
+\newcommand{\V}[1]{\ifcsname v@#1\endcsname\csname v@#1\endcsname\else\textbf{??}\errmessage{missing value #1}\fi}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\DL}{https://github.com/Questboy23/predictive-loading/releases/latest}
+
+\title{Predictive Loading, Explained\\[2pt]\large How a computer can learn your habits to do the waiting before you click}
+\author{Reed Ostrov\\Denison University}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\textwidth}{\centering
+\textbf{Download:} \url{\DL}\\[2pt]
+Mac: \texttt{brew install questboy23/tap/predictive-loading} then \texttt{predictive-loading enable}\\
+Chrome: \texttt{git clone https://github.com/Questboy23/predictive-loading}\\ then \texttt{predictive-loading/install/setup.sh chrome}\\[2pt]
+Free, open source (MIT license). Nothing you browse leaves your computer.}}
+\end{center}
+
+\begin{abstract}
+\noindent Opening a web page involves several short waits that happen one after another after you click. This paper describes two small tools that guess your next click from your own past behavior and do some of that waiting ahead of time. One runs on the Mac and speeds up name lookups for every app. The other is a Chrome extension that loads the next page on a site in the background. Both use the same guessing method, both act only when the expected time saved is larger than the cost, and both keep all data on your computer. In tests on old public browsing logs the method guessed better than the standard simple approach on all \V{r0.ntraces} logs. In live timing tests the gains were small and mixed, and some tests showed losses. Every number here is reported as measured, including the losses.
+\end{abstract}
+
+\section{The problem: waiting in a line}
+When you click a link, your computer does several things in order, and each one waits for the one before it:
+\begin{enumerate}
+\item \term{Name lookup (DNS).} Computers find each other by number, so a name like \texttt{example.com} has to be turned into an address. This is the \term{Domain Name System}, or DNS: your computer asks a \term{resolver} (a phone book server, usually run by your Wi-Fi network) and waits for the answer. Answers are kept for a while in a \term{cache} (a short-term memory), so a second lookup of the same name is almost instant. Each answer comes with a \term{time to live} (TTL), after which it expires and must be asked again.
+\item \term{Connecting.} Your computer opens a secure connection to that address, which takes one or more round trips across the network.
+\item \term{Loading.} The server sends the page, and the browser draws it.
+\end{enumerate}
+A \term{round trip} is the time for a message to reach the other side and come back. It is about 10\,ms on good home Wi-Fi and 150\,ms or more on poor Wi-Fi. Several round trips in a row add up to a noticeable delay.
+
+The key observation is that people are predictable. You open the same sites, move through them in the same order, and often at the same time of day. If the next step can be guessed, the waiting can be done while you are still reading the current page (Figure~\ref{fig:time}).
+
+\begin{figure}[h]
+\centering
+\timelinediagram
+\caption{Top: without prediction, all the waiting starts at the click. Bottom: with a correct guess, the lookup and the page load already happened while you were reading, so only the final swap remains.}
+\label{fig:time}
+\end{figure}
+
+\section{What the two tools do}
+\textbf{The Mac tool} runs a private resolver on your own computer called \term{Unbound}, a widely used open-source DNS program. Every app on the Mac asks it for names. A small background program (the \term{daemon}) watches which names you look up, guesses which ones you will need next, and asks for them early, so that the answer is already in the cache when an app needs it. Unbound then forwards questions to the same network resolvers your Mac used before, so your network sees nothing new.
+
+\textbf{The Chrome extension} watches which pages you open on each site. When it is confident about your next page on the same site, it tells Chrome to get that page ready using Chrome's own built-in feature, the \term{Speculation Rules API}. Chrome can either \term{prefetch} a page (download it) or \term{prerender} it (download and draw it in a hidden tab, then show it instantly when you click). The extension itself never downloads anything. It only writes a short note in the page that Chrome reads, and it allows at most 2 prerendered pages at a time.
+
+Figure~\ref{fig:system} shows how the parts connect. The box in the middle is the shared guessing method. The same method was written twice, in Python for the Mac and in JavaScript for Chrome. A test feeds both versions the same 10{,}000 events and checks that they give exactly the same output.
+
+\begin{figure}[h]
+\centering
+\resizebox{\textwidth}{!}{\systemdiagram}
+\caption{How the parts connect. Left: every Mac app asks the local resolver; the daemon reads its log, guesses, and warms names. Right: the extension hashes the page address, guesses, and asks Chrome to preload. Both use the same predictor (shaded, double border).}
+\label{fig:system}
+\end{figure}
+
+\section{How it guesses}
+Each tool sees a sequence of \term{events}. On the Mac an event is a name lookup, like \texttt{mail.google.com}. In Chrome an event is a page on a site, like the inbox page. The predictor's job is to give a probability to every possible next event.
+
+It does this by combining four simple \term{models}, each a different way of looking at your history:
+\begin{itemize}
+\item \textbf{Overall habits (order 0):} how often you visit each thing at all.
+\item \textbf{What came right before (order 1):} after page A, how often you went to each page.
+\item \textbf{The last two steps (order 2):} after A then B, where you went next.
+\item \textbf{Time of day:} what you usually open at this hour.
+\end{itemize}
+Each model counts what it has seen. To turn counts into probabilities it uses a standard rule from data compression, the \term{Krichevsky--Trofimov estimator}, which in plain terms adds half a visit to every count so that something seen once is not treated as certain. Each model also keeps some probability for ``something new I have never seen,'' because people do new things.
+
+The four models are combined by a \term{Bayesian mixture}: each model gets a weight according to how well it predicted your recent history, and the final guess is the weighted average. A model that keeps being right gets more say. Old habits fade: every count shrinks a little with each new event (the \term{decay}), so last week matters more than last year. Six copies run side by side with different fading speeds, and each day the tool switches to the one that guessed best over the past 7 days.
+
+\textbf{How guesses are scored.} Two measures are used. \term{Top-1 accuracy} is how often the single best guess was right. \term{Log-loss}, measured in \term{bits per event}, rewards giving high probability to what actually happened and punishes confident wrong guesses; lower is better. Log-loss matters here because the tools act on probabilities, not only on the top guess.
+
+\section{When it acts: the cost rule}
+A wrong guess wastes something: a little network traffic, a little battery. So the tools act only when the guess is worth it. For a candidate next step $B$, they act only if
+\[
+P(B) \times T_{\text{saved}}(B) \;>\; C(B),
+\]
+where $P(B)$ is the predicted probability, $T_{\text{saved}}(B)$ is the time a correct guess would save, and $C(B)$ is the cost of being wrong. All three are measured on your own computer.
+
+\emph{Example.} Suppose a page usually takes 1{,}200\,ms to load on your connection, and the predictor gives it a 30\% chance. The expected saving is $0.3 \times 1200 = 360$\,ms. If the page is 2\,MB and your connection moves 10\,MB per second, a wasted load costs about $0.7 \times 200 = 140$\,ms worth of bandwidth. Since 360 is more than 140, the extension preloads it. At a 5\% chance the expected saving drops to 60\,ms, and it does nothing.
+
+\textbf{Proving it helps.} Each tool also runs a small built-in experiment, called a \term{holdout}. For a random 10\% (Mac) or 20\% (Chrome) of its confident guesses, it deliberately does nothing and records what happens. Comparing those cases with the ones where it acted gives a fair measure of real time saved on your own machine. The command \texttt{predictive-loading stats} and the extension's popup show this, with a range, once there are enough cases (30 on each side for the Mac tool).
+
+\section{Safety and privacy}
+The tools were designed so that a bug or a bad guess cannot break your internet or leak what you browse.
+\begin{itemize}
+\item \textbf{No data leaves your computer.} Neither tool has a server. The extension holds only one Chrome permission, \texttt{storage}, and its code contains no way to send anything over the network.
+\item \textbf{Addresses are scrambled before storage.} The extension stores only a \term{hash} (SHA-256) of each page path: a one-way fingerprint that lets it recognise ``the same page again'' without keeping the address itself. Query strings are dropped.
+\item \textbf{Dangerous links are never preloaded.} Links with words like log out, delete, unsubscribe, cart, checkout, buy, pay, order, confirm, cancel or settings are skipped, as are downloads, other sites, and anything when Data Saver is on. The extension does not run in Incognito.
+\item \textbf{The Mac tool fails safe.} The local resolver accepts questions only from this computer. A watchdog checks it every 2 seconds and puts back your original DNS settings after 3 failures. After a network change, the Mac uses its normal DNS until the network is confirmed open, so hotel and airport sign-in pages still work. \texttt{predictive-loading uninstall} restores your exact previous settings and deletes all data.
+\item \textbf{It checks answers.} Unbound verifies \term{DNSSEC} signatures, a system that lets a resolver detect forged DNS answers.
+\end{itemize}
+
+\textbf{Independent security checks.} Before release, and again for this paper on 20 November 2026, the full code was checked with free open-source scanners published on GitHub:
+\begin{center}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Scanner (GitHub project) & What it looks for & Result \\
+\midrule
+gitleaks (gitleaks/gitleaks) & passwords or keys in code and history & 0 found \\
+TruffleHog (trufflesecurity/trufflehog) & live, working secrets & 0 verified \\
+Semgrep (semgrep/semgrep) & known unsafe code patterns & 0 in shipped code$^{*}$ \\
+Bandit (PyCQA/bandit) & unsafe Python & 0 medium or high \\
+ShellCheck (koalaman/shellcheck) & shell script mistakes & 0 warnings \\
+OSV-Scanner (google/osv-scanner) & dependencies with known flaws & 0 \\
+Syft + Grype (anchore) & full parts list, known flaws & 0 \\
+Project test (\texttt{tests/security.sh}) & the privacy rules above & 0 failed \\
+\bottomrule
+\end{tabular}
+\end{center}
+{\footnotesize $^{*}$Semgrep flagged 11 spots in the benchmark scripts, which are not installed on users' machines. They open a fixed list of public test sites in a test browser. Bandit's 35 low-severity notes are about running fixed system commands such as \texttt{networksetup}.}
+
+No scanner can prove software is perfectly safe. These checks show the code contains no known bad patterns, no leaked secrets and no known-vulnerable parts, and that the privacy rules hold.
+
+\section{What we measured}
+All tests were run by scripts in the public repository, and the full tables are in \texttt{RESULTS.md}. A \term{median} is the middle value. A \term{95\% confidence interval} (CI) is the range the true value very likely falls in; if it includes 0, the test could not tell better from worse.
+
+\textbf{1. Does the guessing work? (offline test, run first).} The predictor replayed \V{r0.ntraces} real browsing logs, including MSNBC (\V{r0.msnbc.users} users), NASA's 1995 web server, and one person's own recorded Chrome history. It was compared with the common simple method, \term{order-1 Markov} (``guess what most often followed the current page''). It had lower log-loss on all \V{r0.wins_markov_bits} logs. On MSNBC its top guess was right \V{r0.msnbc.mixture.top1}\% of the time against \V{r0.msnbc.markov1.top1}\% for Markov. On one person's Chrome history it guessed the next website \V{r0.recorded_chrome_domains.mixture.top1}\% of the time.
+
+\textbf{2. Name lookups (500 popular sites).}
+\begin{center}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Median lookup time (ms) & First time & After the cache expired \\
+\midrule
+Network's own resolver & \V{r1.cold.system_default.median_ms} & \V{r1.warm.system_default.median_ms} \\
+Local Unbound alone & \V{r1.cold.unbound_alone.median_ms} & \V{r1.warm.unbound_alone.median_ms} \\
+Local Unbound + predictor & \V{r1.cold.unbound_plus_predictor.median_ms} & \V{r1.warm.unbound_plus_predictor.median_ms} \\
+\bottomrule
+\end{tabular}
+\end{center}
+The predictor made the local resolver faster than without it. On this campus network, however, the shared resolver was already very fast, because thousands of people keep its cache full. The local setup lost on first lookups and roughly tied afterwards. On a home network with a slow resolver the balance may differ.
+
+\textbf{3. Real API calls (50 services, 5 rounds).} With the Mac tool on, repeat calls were \V{r3.warm.paired}\,ms faster each (CI \V{r3.warm.paired.lo} to \V{r3.warm.paired.hi}). First calls were slower: the paired difference was \V{r3.cold.paired}\,ms, because the local cache started empty.
+
+\textbf{4. Page loads in Chrome (50 sites, 3 Wi-Fi speeds).} Each site was visited only once before testing, which is far less history than a real user builds up. With so little history the extension rarely passed its own cost rule and showed no clear gain; at the 60\,ms setting it was \V{r2.60.eff.ext}\,ms slower (CI \V{r2.60.eff.ext.lo} to \V{r2.60.eff.ext.hi}).
+
+\textbf{5. Compared with other preloaders.} In a small test where a simulated user hovered over a link before clicking, the median wait for the next page was \V{pb.extension.med}\,ms with the extension, \V{pb.default.med}\,ms with Chrome's default, \V{pb.instantpage.med}\,ms with instant.page and \V{pb.quicklink.med}\,ms with Quicklink. Only \V{pb.extension.n} to 8 sites were tested, so this is a hint, not proof.
+
+\section{How to install and remove it}
+Everything is at \url{\DL}.
+\begin{itemize}
+\item \textbf{Mac tool.} Needs Homebrew (\url{https://brew.sh}). In Terminal, run these two lines:\\
+\hspace*{1em}\texttt{brew install questboy23/tap/predictive-loading}\\
+\hspace*{1em}\texttt{predictive-loading enable}\\
+ macOS asks for your password once, because changing DNS settings needs it. Check progress any time with \texttt{predictive-loading stats}.
+\item \textbf{Chrome extension.} In Terminal, run these two lines:\\
+\hspace*{1em}\texttt{git clone https://github.com/Questboy23/predictive-loading}\\
+\hspace*{1em}\texttt{predictive-loading/install/setup.sh chrome}\\
+ A small guide window opens beside Chrome. It reads the screen, points a red arrow at each button, and with your permission does the clicks itself: it opens the Extensions page, turns on Developer mode, clicks Load unpacked and picks the folder. It closes when the extension is on. Chrome does not allow extensions to be installed from Terminal, which is why the guide clicks through Chrome's own page.
+\item \textbf{Removing.} \texttt{predictive-loading uninstall} restores DNS and deletes all Mac data. In Chrome, click Remove on the extension's card; the popup also has a button to delete all learned data.
+\end{itemize}
+
+\section{Limits and what comes next}
+The method is sound in offline tests, but the live speed gains so far are small, mixed, or within noise. The biggest open question is whether weeks of one person's real history push enough guesses over the cost rule to matter. The tests above used one visit per site, which gives the extension almost nothing to learn from. The built-in holdout measures exactly this on each user's own machine, so the answer will come from real use, not from a lab. If the local resolver is slower than your network's, the honest result will show up there too, and \texttt{predictive-loading uninstall} undoes everything.
+
+\vspace{4pt}
+\noindent\textbf{Glossary.} \textit{Cache}: short-term memory of recent answers. \textit{DNS}: the internet's phone book. \textit{Hash}: a one-way fingerprint of text. \textit{Holdout}: a random set of cases left alone for comparison. \textit{Log-loss}: a score for probability guesses, lower is better. \textit{Prefetch / prerender}: download a page early / download and draw it early. \textit{Resolver}: the server that answers DNS questions. \textit{Round trip}: time for a message to go and come back. \textit{TTL}: how long a DNS answer may be kept.
+
+\end{document}

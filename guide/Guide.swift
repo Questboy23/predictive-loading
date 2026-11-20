@@ -323,6 +323,10 @@ final class Guide: NSObject {
             var hit: NSRect?
             for t in s.target ?? [] { if let r = find(t, in: obs, screen: screen) { hit = r; break } }
             self.ticksOnStep += 1
+            if ProcessInfo.processInfo.environment["PLGUIDE_DEBUG"] != nil { // test-only trace on stderr
+                let front = NSWorkspace.shared.frontmostApplication?.localizedName ?? "?"
+                FileHandle.standardError.write("step \(self.i + 1) tick \(self.ticksOnStep) done=\(done) hit=\(hit != nil) auto=\(self.autoBox.state == .on) ax=\(AXIsProcessTrusted()) front=\(front) idx=\(self.autoIdx) words=\(obs.count)\n".data(using: .utf8)!)
+            }
             // Do it for the person: only after a tick that saw the step not yet done, one action at a time.
             if let acts = s.auto, self.autoBox.state == .on, AXIsProcessTrusted(), !done, self.ticksOnStep >= 2,
                Date().timeIntervalSince(self.lastAuto) > 2.5 {
