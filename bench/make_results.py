@@ -172,6 +172,10 @@ def route2():
                 kv(key + ".pre", str(pre))
                 w("| %s | %s | %s | %d | %s | %s | %s [%s, %s] | %s | %d |" % (PROFILES[rtt], ext, mode, len(cell), f(statistics.median(home), 0),
                                                                      f(p75(home), 0), f(statistics.median(nxt), 0), f(lo, 0), f(hi, 0), f(p75(nxt), 0), pre))
+    pres = [int(KV["r2.%d.on.%s.pre" % (r, m)]) for r in (10, 60, 150) for m in ("off", "on") if "r2.%d.on.%s.pre" % (r, m) in KV]
+    if pres:
+        kv("r2.pre.min", str(min(pres)))
+        kv("r2.pre.max", str(max(pres)))
     w()
     w("Paired effects (same site): Mac tool on minus off on home load; extension on minus off on next-page wait. Negative = faster.")
     w()

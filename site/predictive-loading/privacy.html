@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Predictive Loading privacy policy</title><link rel="stylesheet" href="style.css"></head><body><main><h1>Predictive Loading privacy policy</h1>
+<p>Effective 2026-11-20.</p>
+<p>Predictive Loading collects nothing and sends nothing anywhere.</p>
+<h2>Chrome extension</h2>
+<p>&bull; Permission: <code>storage</code> only. No host permissions, no network permissions.</p>
+<p>&bull; What it stores, on your computer only, in <code>chrome.storage.local</code>: SHA-256 hashes of each site&#x27;s origin and of the page paths you visit on that site (query strings and fragments are dropped before hashing), counts used for prediction, measured page load times and sizes, and the time-saved numbers shown in the popup.</p>
+<p>&bull; It never stores a plain URL. It does not run in Incognito windows.</p>
+<p>&bull; It makes no network requests. Pages it predicts are loaded early by Chrome itself through the Speculation Rules API, from the same site you are on.</p>
+<p>&bull; &quot;Delete all data&quot; in the popup erases everything it stored. Removing the extension erases it too.</p>
+<h2>macOS tool</h2>
+<p>&bull; Runs a local DNS resolver (Unbound) that answers only this Mac (127.0.0.1 and ::1).</p>
+<p>&bull; Stores, on your Mac only, with file mode 600: the domain names your Mac looked up recently (the query log is read and emptied every 60 s), prediction counts, lookup timings, and a resolver cache file.</p>
+<p>&bull; Lookups go to the same DNS servers your network already gives you. Nothing is sent to the author or any third party.</p>
+<p>&bull; <code>predictive-loading uninstall</code> restores your original DNS settings and deletes all of its files.</p>
+<h2>Contact</h2>
+<p>Open an issue at <a href="https://github.com/Questboy23/predictive-loading/issues.">https://github.com/Questboy23/predictive-loading/issues.</a></p></main></body></html>

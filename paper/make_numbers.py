@@ -62,18 +62,22 @@ fig.tight_layout()
 fig.savefig(os.path.join(HERE, "fig_route0.pdf"))
 
 # Route 1: DNS median by condition
-conds = [("System", "system_default"), ("Unbound", "unbound_alone"), ("Unbound+pred.", "unbound_plus_predictor")]
+conds = [("System", "system_default"), ("Unbound", "unbound_alone"), ("Unb.+pred.", "unbound_plus_predictor")]
 fig, ax = plt.subplots(figsize=(3.2, 2.2))
 bars(ax, conds, [("cold (round 1)", "cold"), ("later rounds", "warm")], lambda c, p: num("r1.%s.%s.median_ms" % (p, c)), "median lookup ms")
 fig.tight_layout()
 fig.savefig(os.path.join(HERE, "fig_route1.pdf"))
 
 # Route 2: next-page wait and home load by Wi-Fi profile
-profiles = [("home 10 ms", 10), ("campus 60 ms", 60), ("poor 150 ms", 150)]
+profiles = [("10 ms", 10), ("60 ms", 60), ("150 ms", 150)]
 cells = [("ext off, Mac off", ("off", "off")), ("ext off, Mac on", ("off", "on")), ("ext on, Mac off", ("on", "off")), ("ext on, Mac on", ("on", "on"))]
 if num("r2.n"):
-    fig, axs = plt.subplots(1, 2, figsize=(6.5, 2.4))
+    fig, axs = plt.subplots(1, 2, figsize=(6.5, 2.9))
     bars(axs[0], profiles, cells, lambda r, c: num("r2.%d.%s.%s.home" % (r, c[0], c[1])), "home page load, median ms")
     bars(axs[1], profiles, cells, lambda r, c: num("r2.%d.%s.%s.next" % (r, c[0], c[1])), "wait for next page, median ms")
-    fig.tight_layout()
+    for ax in axs:
+        ax.get_legend().remove()
+        ax.set_xlabel("Wi-Fi round-trip time")
+    fig.legend(*axs[0].get_legend_handles_labels(), loc="upper center", ncol=4, frameon=False, fontsize=7)
+    fig.tight_layout(rect=(0, 0, 1, 0.9))
     fig.savefig(os.path.join(HERE, "fig_route2.pdf"))

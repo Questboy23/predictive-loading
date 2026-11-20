@@ -1,0 +1,7 @@
+bench env up: unbound :5310, proxy :1280, daemon True
+session rtt=10 ext=off exit=0
+session rtt=60 ext=off exit=0
+session rtt=60 ext=on exit=0
+session rtt=150 ext=on exit=0
+session rtt=150 ext=off exit=0
+session rtt=10 ext=on exit=0

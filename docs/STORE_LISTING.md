@@ -22,5 +22,5 @@
 - Privacy policy URL: https://reedsmoneymaker23.com/predictive-loading/privacy.html
 - Homepage URL: https://reedsmoneymaker23.com/predictive-loading/
 - Support URL: https://github.com/Questboy23/predictive-loading/issues
-- Screenshots: `docs/store/screenshot-1.png` (1280x800), `docs/store/screenshot-2.png`
+- Screenshot: `docs/store/screenshot-1280x800.png`. Small promo tile: `docs/store/promo-440x280.png`
 - Icon: `extension/icons/128.png`

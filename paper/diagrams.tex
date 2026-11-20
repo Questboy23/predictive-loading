@@ -34,11 +34,11 @@
 \newcommand{\timelinediagram}{%
 \begin{tikzpicture}[font=\small, x=1.15cm, y=7mm,
   seg/.style={draw, thick, minimum height=5mm, inner sep=0pt}]
-  \foreach \y/\lab in {3/Without, 1.5/With} \node[anchor=east] at (-0.15, \y) {\lab};
+  \foreach \y/\lab in {3/Without, 1.5/With} \node[anchor=east] at (-3.3, \y) {\lab};
   % without
   \draw[fill=gray!60] (0,2.75) rectangle (0.9,3.25); \node[font=\scriptsize] at (0.45,3.55) {DNS};
   \draw[fill=gray!35] (0.9,2.75) rectangle (1.8,3.25); \node[font=\scriptsize] at (1.35,3.55) {connect};
-  \draw[fill=gray!15] (1.8,2.75) rectangle (4.4,3.25); \node[font=\scriptsize] at (3.1,3.55) {request, response, render};
+  \draw[fill=gray!15] (1.8,2.75) rectangle (4.4,3.25); \node[font=\scriptsize] at (3.1,3.95) {request, response, render};
   \draw[very thick] (0,2.5) -- (0,3.5); \node[font=\scriptsize, anchor=north] at (0,2.5) {click};
   \draw[very thick] (4.4,2.5) -- (4.4,3.5); \node[font=\scriptsize, anchor=north] at (4.4,2.5) {page ready};
   % with
@@ -47,5 +47,5 @@
   \node[font=\scriptsize, align=center] at (-1.9,0.75) {done while the person reads:\\DNS warmed, page prerendered};
   \draw[very thick] (0,1.0) -- (0,2.0); \draw[fill=gray!15] (0,1.25) rectangle (0.35,1.75);
   \node[font=\scriptsize, anchor=west] at (0.4,1.5) {activation only};
-  \draw[-{Stealth}, thick] (-3.4,0.1) -- (4.8,0.1) node[right, font=\scriptsize] {time};
+  \draw[-{Stealth}, thick] (-4.4,0.1) -- (4.8,0.1) node[right, font=\scriptsize] {time};
 \end{tikzpicture}}

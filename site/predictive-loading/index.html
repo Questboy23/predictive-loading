@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Predictive Loading</title><link rel="stylesheet" href="style.css"></head><body><main>
+<h1>Predictive Loading</h1>
+<p>Predicts the next thing you will load from your own history and does the waiting early: DNS lookups for every app on your Mac, and the next page on each site in Chrome. Nothing leaves your device.</p>
+<p class="links"><a href="https://github.com/Questboy23/predictive-loading/releases/tag/v1.0">GitHub release v1.0</a> <a href="paper.pdf">Paper (PDF)</a> <a href="privacy.html">Privacy policy</a> <a href="https://github.com/Questboy23/predictive-loading">Source</a></p>
+<p>Chrome Web Store: in review (install from the GitHub release meanwhile)</p>
+<h2>Install on macOS</h2>
+<pre>brew install questboy23/tap/predictive-loading
+predictive-loading enable
+predictive-loading stats</pre>
+<p><code>predictive-loading uninstall</code> restores your DNS settings exactly and deletes all data.</p>
+<h2>Install in Chrome</h2>
+<p>From the Chrome Web Store once approved, or download the extension zip from the <a href="https://github.com/Questboy23/predictive-loading/releases/tag/v1.0">release</a>, unzip, open chrome://extensions, turn on Developer mode, and choose Load unpacked. Permission requested: storage only.</p>
+<h2>Measured results</h2>
+<p>Offline replay: the predictor's log-loss beat an order-1 Markov baseline on 6 of 6 traces. On recorded Chrome history it guessed the next domain correctly 31.5% of the time.</p>
+<table><tr><th>Wi-Fi profile</th><th>Next page wait, both off (median)</th><th>Both on (median)</th><th>Extension effect, paired median [95% CI]</th></tr><tr><td>Home Wi-Fi, 10 ms</td><td>1414 ms</td><td>1583 ms</td><td>-88 ms [-329, 55], n=43</td></tr><tr><td>Busy campus Wi-Fi, 60 ms</td><td>1659 ms</td><td>2056 ms</td><td>76 ms [13, 432], n=41</td></tr><tr><td>Poor Wi-Fi, 150 ms</td><td>1560 ms</td><td>1662 ms</td><td>92 ms [-97, 290], n=32</td></tr></table>
+<p>DNS after TTLs expire (Tranco top 500): system resolver 4.59 ms, Unbound alone 5.01 ms, Unbound + predictor 4.46 ms (medians). Full numbers, losses included: <a href="https://github.com/Questboy23/predictive-loading/blob/main/RESULTS.md">RESULTS.md</a>.</p>
+</main></body></html>

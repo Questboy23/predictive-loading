@@ -28,7 +28,7 @@ All timing experiments run on one MacBook (Apple silicon, macOS 26) on a campus 
 \label{fig:r1}
 \end{figure}
 
-\textbf{Route 2.} Table~\ref{tab:r2} and Figure~\ref{fig:r2} give the medians for \V{r2.n} measured visits (\V{r2.errors} site failures excluded). The paired extension effect on the wait for the next page was \V{r2.10.eff.ext}\,ms [\V{r2.10.eff.ext.lo}, \V{r2.10.eff.ext.hi}] at 10\,ms, \V{r2.60.eff.ext}\,ms [\V{r2.60.eff.ext.lo}, \V{r2.60.eff.ext.hi}] at 60\,ms and \V{r2.150.eff.ext}\,ms [\V{r2.150.eff.ext.lo}, \V{r2.150.eff.ext.hi}] at 150\,ms (negative is faster). The Mac tool's paired effect on the home page load was \V{r2.10.eff.mac}, \V{r2.60.eff.mac} and \V{r2.150.eff.mac}\,ms at the three profiles.
+\textbf{Route 2.} Table~\ref{tab:r2} and Figure~\ref{fig:r2} give the medians for \V{r2.n} measured visits (\V{r2.errors} site failures excluded). The paired extension effect on the wait for the next page was \V{r2.10.eff.ext}\,ms [\V{r2.10.eff.ext.lo}, \V{r2.10.eff.ext.hi}] at 10\,ms, \V{r2.60.eff.ext}\,ms [\V{r2.60.eff.ext.lo}, \V{r2.60.eff.ext.hi}] at 60\,ms and \V{r2.150.eff.ext}\,ms [\V{r2.150.eff.ext.lo}, \V{r2.150.eff.ext.hi}] at 150\,ms (negative is faster). The Mac tool's paired effect on the home page load was \V{r2.10.eff.mac}, \V{r2.60.eff.mac} and \V{r2.150.eff.mac}\,ms at the three profiles, every interval spanning zero. With the extension on, the next page was served early in only \V{r2.pre.min} to \V{r2.pre.max} of about 25 visits per cell: after one training visit the link's predicted probability was usually too low to pass the decision rule, and the 20\% holdout skipped some of the rest. With so few preloads the paired differences mostly measure variation between browser instances, and at 60\,ms the extension sessions were slower. Route~2 shows no page-load gain; it shows that the decision rule stays quiet when history is thin.
 
 \begin{table}[t]
 \centering\small
@@ -53,7 +53,7 @@ Poor, 150 ms & \V{r2.150.off.off.next} & \V{r2.150.off.on.next} & \V{r2.150.on.o
 \label{fig:r2}
 \end{figure}
 
-\textbf{Route 3.} For API calls in later rounds the Mac tool saved a paired median of \V{r3.warm.paired}\,ms [\V{r3.warm.paired.lo}, \V{r3.warm.paired.hi}] per call ($n=\V{r3.warm.paired.n}$; median total \V{r3.warm.off.total} vs \V{r3.warm.on.total}\,ms). On the first round it cost \V{r3.cold.paired}\,ms [\V{r3.cold.paired.lo}, \V{r3.cold.paired.hi}] ($n=\V{r3.cold.paired.n}$), because a cold local Unbound resolves from the root down while the campus resolver already holds the names.
+\textbf{Route 3.} For API calls in later rounds the Mac tool saved a paired median of \V{r3.warm.paired}\,ms [\V{r3.warm.paired.lo}, \V{r3.warm.paired.hi}] per call ($n=\V{r3.warm.paired.n}$; median total \V{r3.warm.off.total} vs \V{r3.warm.on.total}\,ms). On the first round calls were slower, a paired difference of \V{r3.cold.paired}\,ms [\V{r3.cold.paired.lo}, \V{r3.cold.paired.hi}] ($n=\V{r3.cold.paired.n}$), because a cold local Unbound resolves from the root down while the campus resolver already holds the names.
 
 \section{Benchmarks}
 \textbf{Prediction.} Against the four predictors, the mixture had the lowest log-loss on most traces. It lost to PPM-C on bits for the recorded domains (\V{r0.recorded_chrome_domains.mixture.bits} vs \V{r0.recorded_chrome_domains.ppm_c.bits}) and MSNBC (\V{r0.msnbc.mixture.bits} vs \V{r0.msnbc.ppm_c.bits}), and on top-1 for the recorded domains (\V{r0.recorded_chrome_domains.mixture.top1}\% vs \V{r0.recorded_chrome_domains.ppm_c.top1}\%).
