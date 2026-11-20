@@ -64,6 +64,8 @@ def root_main(sub):
             os.close(fd)
             os.chmod(daemon.path(name), 0o600)
         write_plists()
+        for label in reversed(LABELS):  # re-enable after an upgrade: restart with the new code
+            subprocess.run(["launchctl", "bootout", "system/" + label], stderr=subprocess.DEVNULL)
         for label in LABELS:
             subprocess.run(["launchctl", "bootstrap", "system", plist_path(label)])
         print("enabled: Unbound on 127.0.0.1 and ::1; DNS switches over after the captive-portal check")
