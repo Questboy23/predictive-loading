@@ -30,6 +30,8 @@ if [ ! -x "$BIN" ] || [ "$REPO/guide/Guide.swift" -nt "$BIN" ]; then
   cp "$REPO/guide/Info.plist" "$APP/Contents/Info.plist"
   swiftc -O -swift-version 5 -o "$BIN" "$REPO/guide/Guide.swift" 2>/dev/null || { echo "Could not build the guide (install Xcode command line tools: xcode-select --install). Follow docs/INSTALL_CHROME.md instead."; BIN=""; }
   [ -n "$BIN" ] && codesign -s - --force "$APP" >/dev/null 2>&1 || true
+  # A new build needs the macOS grants again: list the app in Accessibility and Screen Recording and open both prompts.
+  [ -n "$BIN" ] && open -n "$APP" --args --ask-permissions
 fi
 
 open_in_chrome() {

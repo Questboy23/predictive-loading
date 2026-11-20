@@ -378,6 +378,12 @@ final class Guide: NSObject {
 }
 
 let args = CommandLine.arguments
+if args.count == 2 && args[1] == "--ask-permissions" { // adds this app to both privacy lists and opens the system prompts
+    _ = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary)
+    _ = CGRequestScreenCaptureAccess()
+    print("accessibility: \(AXIsProcessTrusted()), screen: \(CGPreflightScreenCaptureAccess())")
+    exit(0)
+}
 guard args.count >= 3, let data = FileManager.default.contents(atPath: args[1]),
       let flows = try? JSONDecoder().decode(Flows.self, from: data), let steps = flows.flows[args[2]], !steps.isEmpty else {
     FileHandle.standardError.write("usage: Guide <flows.json> <flow>\n".data(using: .utf8)!)
