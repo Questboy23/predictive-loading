@@ -1,11 +1,13 @@
 \documentclass[10pt]{article}
-\usepackage[margin=0.6in,top=0.5in,bottom=0.5in]{geometry}
+\usepackage[margin=0.55in,top=0.45in,bottom=0.4in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
 \setlist{itemsep=1pt,topsep=2pt,leftmargin=1.4em}
 \setlength{\parskip}{3pt}\setlength{\parindent}{0pt}
 \pagestyle{empty}
@@ -18,7 +20,7 @@
 {\Large\textbf{Predictive Loading in one page}}\hfill Reed Ostrov, Denison University, November 2026\\[-2pt]
 \rule{\textwidth}{0.4pt}
 
-\textbf{The idea.} When you click a link, the waiting starts at the click. Your computer has to find the website, then download the page. Most people are creatures of habit: they open the same sites in the same order. If the computer can guess your next click, it can do the waiting while you are still reading. Predictive Loading is two small free programs that learn your habits on your own computer and try exactly that.
+\textbf{The idea.} When you click a link, the waiting starts at the click. Your computer has to find the website, then download the page. People open the same sites in the same order. If the computer can guess your next click, it can do the waiting while you are still reading. Predictive Loading is two small free programs that learn your habits on your own computer and try exactly that.
 
 \textbf{What actually happens when you click.} Two waits, one after the other:
 \begin{enumerate}
@@ -27,14 +29,31 @@
 \end{enumerate}
 A concrete case: every morning you open your email, then the inbox. Without help, both waits happen after each click. With a correct guess, the phone book answer is already remembered and the inbox is already downloaded, so the page appears almost at once.
 
-\textbf{The two programs.}
-\begin{itemize}
-\item \textbf{Mac tool.} Keeps the phone book answers for names you will probably need in the next hour fresh, so lookups are answered from memory. It works for every app on the Mac.
-\item \textbf{Chrome extension.} On a site you use often, it guesses the next page you will click and tells Chrome to download it early. Chrome has a built-in feature for this; the extension only decides which page.
-\end{itemize}
-Both learn only from your own history. Nothing leaves your computer, and page addresses are stored scrambled. Each acts only when the expected time saved is bigger than the cost of a wrong guess (wasted data). Both have been checked by seven free security scanners with no problems found.
+\textbf{How it works, step by step.}\par\vspace{2pt}
+{\centering
+\begin{tikzpicture}[font=\footnotesize, node distance=3mm and 4.5mm,
+  box/.style={draw, rounded corners=2pt, thick, align=center, text width=2.6cm, minimum height=1.15cm, fill=gray!8, execute at begin node={\hyphenpenalty10000\relax}},
+  act/.style={box, fill=gray!22},
+  arr/.style={-{Stealth}, thick}]
+\node[box] (a) {\textbf{1. You browse}\\as usual};
+\node[box, right=of a] (b) {\textbf{2. It remembers}\\what you opened, and when (scrambled, on your computer only)};
+\node[box, right=of b] (c) {\textbf{3. It guesses}\\your next step, with a chance, e.g.\ ``inbox: 70\%''};
+\node[box, right=of c] (d) {\textbf{4. Worth it?}\\chance $\times$ time saved\\ $>$ cost of a wrong guess};
+\node[act, right=8mm of d, yshift=7mm] (e1) {\textbf{5a. Mac tool}\\refreshes the phone book answer early};
+\node[act, right=8mm of d, yshift=-7mm] (e2) {\textbf{5b. Chrome extension}\\downloads the next page early};
+\node[box, below=3mm of c, text width=4.6cm, minimum height=0.6cm, xshift=-1.5cm] (no) {do nothing, wait for your click as normal};
+\node[box, right=of e1, yshift=-7mm, text width=2.2cm, fill=white, line width=1.2pt] (f) {\textbf{6. You click}\\page appears with less waiting};
+\draw[arr] (a) -- (b); \draw[arr] (b) -- (c); \draw[arr] (c) -- (d);
+\draw[thick] (d.east) -- node[above, font=\scriptsize, inner sep=1pt]{yes} ++(4mm,0) coordinate (y);
+\draw[arr] (y) -- (e1.west); \draw[arr] (y) -- (e2.west);
+\draw[arr] (e1.east) -- (f); \draw[arr] (e2.east) -- (f);
+\draw[arr] (d.south) |- node[pos=0.25, right, font=\scriptsize]{no} (no.east);
+\end{tikzpicture}\par}
+\vspace{1pt}
+The \textbf{Mac tool} handles step 1 of the click (finding addresses) for every app. The \textbf{Chrome extension} handles step 2 (downloading pages) on sites you use often, using a preloading feature Chrome already has.
+Both learn only from your own history. Nothing leaves your computer, and page addresses are stored scrambled. Each acts only when the expected time saved is bigger than the cost of a wrong guess (wasted data). Seven free security scanners found no problems.
 
-\textbf{Did it work? The measured results.} The tests and the pass rule were written down and made public before the analysis ran, so the results could not be bent afterwards.
+\textbf{Did it work? The measured results.} The tests and pass rule were made public before the analysis ran.
 \begin{center}\small
 \begin{tabular}{@{}p{0.27\textwidth}p{0.43\textwidth}p{0.22\textwidth}@{}}
 \toprule
@@ -51,7 +70,7 @@ Chrome extension, \C{e3.sites} sites after an 8-visit habit & \C{e3.on_served_pr
 \textbf{What those numbers mean in real life.}
 \begin{itemize}
 \item \textbf{Mac tool:} it saves about 0.2 thousandths of a second per lookup. One person makes roughly 900 lookups a day, so that is about 0.2 seconds a day on this fast campus network. You would not notice it.
-\item \textbf{Where it could matter:} the saving grows with a slower phone book. At a typical home router (30\,ms) it would be about 1\,ms per lookup; on a slow connection (100\,ms) about 3.6\,ms. Those are estimates from the same data, not new tests.
+\item \textbf{Where it could matter:} the saving grows with a slower phone book: about 1\,ms per lookup at a typical home router, 3.6\,ms on a slow connection (estimates from the same data).
 \item \textbf{Chrome extension:} about 0.1 seconds faster per next page (\C{e3.next.hl}\,ms), on a page that takes about 1.1 seconds. That is a noticeable snap if real. The test had too much noise to rule out zero, because only 42 sites were tested on a busy machine.
 \end{itemize}
 
