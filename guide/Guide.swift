@@ -326,7 +326,9 @@ final class Guide: NSObject {
             // Do it for the person: only after a tick that saw the step not yet done, one action at a time.
             if let acts = s.auto, self.autoBox.state == .on, AXIsProcessTrusted(), !done, self.ticksOnStep >= 2,
                Date().timeIntervalSince(self.lastAuto) > 2.5 {
-                if self.autoIdx < acts.count {
+                // Keystrokes go to the front app, so only act while Chrome is in front.
+                let chromeFront = NSWorkspace.shared.frontmostApplication?.localizedName?.contains("Chrome") ?? false
+                if self.autoIdx < acts.count, chromeFront {
                     let a = acts[self.autoIdx]
                     if a.hasPrefix("clickText:") { // focus a window by clicking its own text first
                         if let r = find(String(a.dropFirst(10)), in: obs, screen: screen) {
@@ -334,6 +336,17 @@ final class Guide: NSObject {
                             self.autoIdx += 1
                             self.lastAuto = Date()
                         }
+                    } else if a == "typeurl" { // Command+L, paste the step's value, Return
+                        self.copyValue()
+                        self.keys(37, .maskCommand) // 37 = L
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                            self.keys(9, .maskCommand)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { self.keys(36, []) }
+                        }
+                        self.autoIdx += 1
+                        self.lastAuto = Date()
+                        self.status.stringValue = "Opened chrome://extensions for you."
+                        return
                     } else if a == "goto" {
                         self.goToFolder()
                         self.autoIdx += 1

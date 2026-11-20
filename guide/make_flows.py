@@ -47,7 +47,7 @@ def step(title, text, copy=None, target=None, done_when=None, done_unless=None, 
 GOTO = "Click Open this folder for me (by hand: click the file window, press Command+Shift+G, Command+V, Return; not the Search box)."
 chrome = [
     step("Open Chrome's Extensions page", "The installer opened it in Chrome. If you don't see it, click Chrome's address bar, paste this and press Return.",
-         "chrome://extensions", done_when=["Developer mode"]),
+         "chrome://extensions", done_when=["Developer mode"], auto=["typeurl"]),
     step("Turn on Developer mode", "Click the Developer mode switch at the top right of the Extensions page.",
          target=["Developer mode"], done_when=["Load unpacked"], auto=["click"], click_right_of=28),
     step("Click Load unpacked", "Click the Load unpacked button at the top left. A file window opens.",

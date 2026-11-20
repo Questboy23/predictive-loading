@@ -1,6 +1,6 @@
 #!/bin/bash
 # End-to-end test of the guide's "do the clicks for me" Chrome install, in a
-# throwaway Chrome for Testing profile. Waits until the Mac has been idle 60 s
+# throwaway Chrome for Testing profile. Waits until nobody is using the Mac
 # (it moves the mouse), then checks the profile's Secure Preferences for the
 # extension. Usage: guide/test_auto.sh [guide binary]
 set -u
@@ -9,11 +9,13 @@ BIN="${1:-/tmp/guide-test}"
 SUP="$HOME/Library/Application Support/PredictiveLoading"
 CFT=$(ls -d "$HOME"/Library/Caches/ms-playwright/chromium-*/chrome-mac-arm64/"Google Chrome for Testing.app" | tail -1)
 idle() { ioreg -c IOHIDSystem | awk '/HIDIdleTime/ {print int($NF/1000000000); exit}'; }
-for _ in $(seq 1 240); do [ "$(idle)" -ge 60 ] && break; sleep 5; done
-[ "$(idle)" -ge 60 ] || { echo "SKIP: Mac never idle for 60 s"; exit 2; }
+# Away = no input for 5 min and no video or audio playing (watching counts as present).
+away() { [ "$(idle)" -ge 300 ] && ! pmset -g assertions | grep -qE "Video Wake Lock|Playing audio"; }
+for _ in $(seq 1 "${WAIT_MIN:-360}"); do away && break; sleep 60; done
+away || { echo "SKIP: Mac never free for 5 min"; exit 2; }
 python3 guide/make_flows.py "$SUP" >/dev/null
 P=$(mktemp -d /tmp/pl-cft.XXXX)
-open -na "$CFT" --args --user-data-dir="$P" --no-first-run --window-position=0,30 --window-size=1100,800 chrome://extensions
+open -na "$CFT" --args --user-data-dir="$P" --no-first-run --window-position=0,30 --window-size=1100,800  # blank tab: the guide must open chrome://extensions itself
 sleep 5
 front() { osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null; }
 for _ in 1 2 3 4 5; do
@@ -27,6 +29,7 @@ ok=0
 for t in $(seq 1 30); do
   sleep 2
   screencapture -x "/tmp/pl-auto-$t.png"
+  f=$(front); case "$f" in *"Chrome for Testing"*|Guide|PLGuide) ;; *) echo "INVALID: $f came to the front (idle $(idle) s)"; kill $G; osascript -e 'tell application "Google Chrome for Testing" to quit'; exit 3;; esac
   if grep -qs "PredictiveLoading/extension" "$P/Default/Secure Preferences" "$P/Default/Preferences"; then ok=1; break; fi
 done
 sleep 10
