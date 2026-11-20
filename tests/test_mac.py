@@ -338,6 +338,25 @@ class MacSafety(unittest.TestCase):
         self.assertNotEqual(self.d.st["versions"], "15.0|Version 1.0.0")
         self.assertEqual(self.d.mode, "active")
 
+    def test_14_status_flags_stopped_daemon(self):
+        import contextlib
+        import io
+        import cli
+        self.d.cycle()
+        old = time.time() - 20 * 60
+        os.utime(daemon.path("stats.json"), (old, old))  # daemon silent for 20 min
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            cli.status()
+            cli.stats()
+        self.assertIn("daemon not running", out.getvalue())
+        self.assertIn("WARNING", out.getvalue())
+        self.d.cycle()  # fresh write clears it
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            cli.status()
+        self.assertNotIn("not running", out.getvalue())
+
     def test_13_wake_refreshes_next_hour(self):
         for n in ["example.com", "example.org", "iana.org"] * 3:
             dnsq.query(n, "A", "127.0.0.1", PORT, timeout=5)

@@ -13,6 +13,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -67,7 +68,20 @@ def root_main(sub):
         for label in reversed(LABELS):  # re-enable after an upgrade: restart with the new code
             subprocess.run(["launchctl", "bootout", "system/" + label], stderr=subprocess.DEVNULL)
         for label in LABELS:
-            subprocess.run(["launchctl", "bootstrap", "system", plist_path(label)])
+            # bootout returns before the old process exits; bootstrapping then fails (error 5), so wait it out.
+            for _ in range(30):
+                if not loaded(label):
+                    break
+                time.sleep(0.5)
+            for _ in range(3):
+                subprocess.run(["launchctl", "bootstrap", "system", plist_path(label)], stderr=subprocess.DEVNULL)
+                if loaded(label):
+                    break
+                time.sleep(2)
+        missing = [l for l in LABELS if not loaded(l)]
+        if missing:
+            print("FAILED to start %s; DNS settings were not changed. Run `sudo predictive-loading enable` again." % ", ".join(missing))
+            return 1
         print("enabled: Unbound on 127.0.0.1 and ::1; DNS switches over after the captive-portal check")
         return 0
     if sub in ("disable", "uninstall"):
@@ -88,7 +102,25 @@ def root_main(sub):
     return 2
 
 
+def loaded(label):
+    return subprocess.run(["launchctl", "print", "system/" + label], capture_output=True).returncode == 0
+
+
+def stale_minutes():
+    """Minutes since the daemon last wrote stats.json (it writes every 60 s cycle); None if never."""
+    try:
+        return (time.time() - os.path.getmtime(daemon.path("stats.json"))) / 60
+    except OSError:
+        return None
+
+
+STALE_NOTE = "WARNING: the prediction daemon has not run for %.0f min. Fix: predictive-loading enable"
+
+
 def stats():
+    age = stale_minutes()
+    if age is not None and age > 5:
+        print(STALE_NOTE % age)
     try:
         s = json.load(open(daemon.path("stats.json")))
     except (OSError, ValueError):
@@ -113,6 +145,9 @@ def status():
         mode = json.load(open(daemon.path("stats.json"))).get("mode")
     except (OSError, ValueError):
         mode = "not running"
+    age = stale_minutes()
+    if age is not None and age > 5:
+        mode = "daemon not running (last update %.0f min ago)" % age
     print("mode:", mode)
     print("health:", json.dumps(daemon.health_check()))
     return 0
