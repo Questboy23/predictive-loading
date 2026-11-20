@@ -1,5 +1,12 @@
 # LEDGER: predictive-loading
 
+## Update 2026-11-20 02:35 EST
+- Plain-language explainer paper (paper/plain.tex, 6 pages, 2 diagrams, download box) on the site (plain.pdf) and in releases v1.0.3 and v1.0.4.
+- Security rescan with gitleaks, TruffleHog, Semgrep, Bandit, ShellCheck, OSV-Scanner, Syft+Grype, tests/security.sh: 0 findings in shipped code.
+- Bug found live: `enable` raced launchd (bootout then immediate bootstrap), leaving the prediction daemon unloaded from 01:15 to 02:32 while DNS ran through Unbound. Fixed in v1.0.4 (wait, retry, verify; status/stats warn when stats.json is over 5 min old). Re-enabled on Reed's Mac; daemon running.
+- Guide bug: launching made the guide the frontmost app, so auto clicks never fired. Fixed (hands focus back to Chrome); end-to-end test pending an idle Mac.
+- Benchmark rerun on Denison network (DHCP DNS 140.141.7.68) running; results go to results/rerun-2026-11-20/.
+
 ## Update 2026-11-20 00:55 EST
 - Extension installed privately in Reed's Chrome (Default profile, unpacked, id cgopchobemmbolhpnfdbhflkpohhicgn) via `install/setup.sh chrome` and the new on-screen guide (guide/Guide.swift). Verified on screen: card shows Predictive Loading 1.0.0, On, pinned.
 - Web Store submission paused at Reed's request (test privately first). Daily store-check task disabled. When ready: `install/setup.sh store` (visibility Private).
