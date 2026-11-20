@@ -285,7 +285,9 @@ def evaluate(name, users, max_users):
     seqs = [s for s in seqs if len(s) >= MIN_EVENTS]
     rng = random.Random(42)
     rng.shuffle(seqs)
-    seqs = seqs[:max_users]
+    # The first 30 shuffled users were the smoke-test sample used while fixing
+    # the escape estimator; they are excluded so results come from untouched users.
+    seqs = seqs[30:30 + max_users] if len(seqs) > 60 else seqs
     t0 = time.time()
     runs = [run_user(s) for s in seqs]
     if len(runs) == 1:
