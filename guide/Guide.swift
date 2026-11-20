@@ -16,6 +16,8 @@ struct Step: Decodable {
     let doneWhen: [String]?    // all of these visible on screen = step done
     let doneUnless: [String]?  // step done once none of these are visible
     let showWhen: [String]?    // all visible = jump straight to this step (person is ahead of the guide)
+    let auto: [String]?        // done for you, in order: "click" (the target) or "goto" (Command+Shift+G, paste, Return)
+    let clickRightOf: Double?  // click this many points right of the target text (e.g. a switch next to its label)
 }
 struct Flows: Decodable { let flows: [String: [Step]] }
 
@@ -103,6 +105,11 @@ final class Guide: NSObject {
     var i = 0
     var busy = false
     var stableDone = 0
+    var ticksOnStep = 0
+    var autoIdx = 0          // next auto action on this step
+    var lastAuto = Date.distantPast
+    var autoRounds = 0
+    var closing = false
     let panel: NSPanel
     let overlay: NSWindow
     let arrow = ArrowView()
@@ -117,6 +124,7 @@ final class Guide: NSObject {
     let back = NSButton(title: "Back", target: nil, action: nil)
     let next = NSButton(title: "Next", target: nil, action: nil)
     let permBtn = NSButton(title: "Allow screen reading (arrows)", target: nil, action: nil)
+    let autoBox = NSButton(checkboxWithTitle: "Do the clicks for me", target: nil, action: nil)
 
     init(steps: [Step], start: Int) {
         self.steps = steps
@@ -151,7 +159,7 @@ final class Guide: NSObject {
         copyField.isSelectable = true
         copyField.drawsBackground = true
         copyField.backgroundColor = NSColor(calibratedWhite: 0.93, alpha: 1)
-        for (b, sel) in [(copyBtn, #selector(copyValue)), (pasteBtn, #selector(paste)), (goBtn, #selector(goToFolder)), (back, #selector(goBack)), (next, #selector(goNext)), (permBtn, #selector(askPermission))] {
+        for (b, sel) in [(copyBtn, #selector(copyValue)), (pasteBtn, #selector(paste)), (goBtn, #selector(goToFolder)), (back, #selector(goBack)), (next, #selector(goNext)), (permBtn, #selector(askPermission)), (autoBox, #selector(toggleAuto))] {
             b.target = self
             b.action = sel
             b.bezelStyle = .rounded
@@ -161,7 +169,7 @@ final class Guide: NSObject {
         let copyRow = NSStackView(views: [copyBtn, pasteBtn])
         let stackGo = goBtn
         let nav = NSStackView(views: [back, next])
-        let stack = NSStackView(views: [stepLabel, titleLabel, body, copyField, copyRow, stackGo, status, permBtn, nav])
+        let stack = NSStackView(views: [stepLabel, titleLabel, body, copyField, copyRow, stackGo, status, permBtn, autoBox, nav])
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 12
@@ -177,6 +185,7 @@ final class Guide: NSObject {
                                      stack.topAnchor.constraint(equalTo: content.topAnchor)])
         panel.contentView = content
         panel.appearance = NSAppearance(named: .aqua) // black text on white, no grey
+        autoBox.state = AXIsProcessTrusted() ? .on : .off
         panel.orderFrontRegardless()
         show()
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in self?.tick() }
@@ -199,6 +208,31 @@ final class Guide: NSObject {
         arrow.target = nil
         arrow.needsDisplay = true
         stableDone = 0
+        ticksOnStep = 0
+        autoIdx = 0
+        autoRounds = 0
+        if i == steps.count - 1 && !closing { // goal reached: say so, then close by itself
+            closing = true
+            status.stringValue = "All done. This guide closes in 8 seconds."
+            DispatchQueue.main.asyncAfter(deadline: .now() + 8) { NSApp.terminate(nil) }
+        }
+    }
+
+    @objc func toggleAuto() {
+        if autoBox.state == .on && !AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary) {
+            autoBox.state = .off
+            status.stringValue = "To click for you, turn on \"Predictive Loading Guide\" in System Settings > Privacy & Security > Accessibility (the window just opened), then tick this box again."
+        }
+    }
+
+    func click(_ r: NSRect, rightOf: Double?) {
+        let h = NSScreen.screens[0].frame.height // CG events use top-left origin
+        let x = rightOf.map { r.maxX + CGFloat($0) } ?? r.midX
+        let p = CGPoint(x: x, y: h - r.midY)
+        for t in [CGEventType.mouseMoved, .leftMouseDown, .leftMouseUp] {
+            CGEvent(mouseEventSource: nil, mouseType: t, mouseCursorPosition: p, mouseButton: .left)?.post(tap: .cghidEventTap)
+            usleep(60_000)
+        }
     }
 
     @objc func copyValue() {
@@ -259,7 +293,7 @@ final class Guide: NSObject {
     func tick() {
         guard !busy else { return }
         let s = steps[i]
-        if s.target == nil && s.doneWhen == nil && s.doneUnless == nil { return }
+        if s.target == nil && s.doneWhen == nil && s.doneUnless == nil && !steps.contains(where: { $0.showWhen != nil }) { return }
         busy = true
         let screen = screenUnderMouse()
         Task { @MainActor in
@@ -288,6 +322,31 @@ final class Guide: NSObject {
             }
             var hit: NSRect?
             for t in s.target ?? [] { if let r = find(t, in: obs, screen: screen) { hit = r; break } }
+            self.ticksOnStep += 1
+            // Do it for the person: only after a tick that saw the step not yet done, one action at a time.
+            if let acts = s.auto, self.autoBox.state == .on, AXIsProcessTrusted(), !done, self.ticksOnStep >= 2,
+               Date().timeIntervalSince(self.lastAuto) > 2.5 {
+                if self.autoIdx < acts.count {
+                    let a = acts[self.autoIdx]
+                    if a.hasPrefix("clickText:") { // focus a window by clicking its own text first
+                        if let r = find(String(a.dropFirst(10)), in: obs, screen: screen) {
+                            self.click(r, rightOf: nil)
+                            self.autoIdx += 1
+                            self.lastAuto = Date()
+                        }
+                    } else if a == "goto" {
+                        self.goToFolder()
+                        self.autoIdx += 1
+                        self.lastAuto = Date()
+                    } else if a == "click", let r = hit {
+                        self.click(r, rightOf: s.clickRightOf)
+                        self.autoIdx += 1
+                        self.lastAuto = Date()
+                        self.status.stringValue = "Clicked \"\(s.target![0])\" for you."
+                        return
+                    }
+                }
+            }
             if let r = hit {
                 self.overlay.setFrame(screen.frame, display: false)
                 let o = self.overlay.frame.origin

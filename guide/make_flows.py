@@ -25,7 +25,7 @@ desc = items["Detailed description"].strip()
 desc = "\n\n".join(p.strip() for p in desc.split("\n\n") if p.strip())
 
 
-def step(title, text, copy=None, target=None, done_when=None, done_unless=None, show_when=None):
+def step(title, text, copy=None, target=None, done_when=None, done_unless=None, show_when=None, auto=None, click_right_of=None):
     s = {"title": title, "text": text}
     if copy:
         s["copy"] = copy
@@ -37,6 +37,10 @@ def step(title, text, copy=None, target=None, done_when=None, done_unless=None, 
         s["doneUnless"] = done_unless
     if show_when:
         s["showWhen"] = show_when
+    if auto:
+        s["auto"] = auto
+    if click_right_of is not None:
+        s["clickRightOf"] = click_right_of
     return s
 
 
@@ -45,14 +49,13 @@ chrome = [
     step("Open Chrome's Extensions page", "The installer opened it in Chrome. If you don't see it, click Chrome's address bar, paste this and press Return.",
          "chrome://extensions", done_when=["Developer mode"]),
     step("Turn on Developer mode", "Click the Developer mode switch at the top right of the Extensions page.",
-         target=["Developer mode"], done_when=["Load unpacked"]),
+         target=["Developer mode"], done_when=["Load unpacked"], auto=["click"], click_right_of=28),
     step("Click Load unpacked", "Click the Load unpacked button at the top left. A file window opens.",
-         target=["Load unpacked"], done_when=["Cancel"]),
+         target=["Load unpacked"], done_when=["Select the extension directory"], auto=["click"]),
     step("Pick the extension folder", "Click Open this folder for me. (By hand: click the file window, press Command+Shift+G, then Command+V, then Return. Do not type in the Search box.) The extension folder opens. Do not go into icons. Then click Select.",
-         EXT, target=["Select"], done_when=["Predictive Loading"], show_when=["Select the extension directory"]),
-    step("Pin it to the toolbar", "Predictive Loading is installed. If its icon is not next to the address bar, turn on Pin to toolbar on its details page (or use the puzzle-piece icon). Then click Next.",
-         target=["Pin to toolbar", "Predictive Loading"], show_when=["Predictive Loading", "Unpacked extension"]),
-    step("Done", "Browse normally. The extension learns which page you open next on each site. Click its icon any time to see time saved, turn it off, or delete all data. Nothing leaves this Mac."),
+         EXT, target=["Select"], show_when=["Select the extension directory"], auto=["clickText:Select the extension directory", "goto", "click"]),
+    step("Done", "Predictive Loading is installed and on. Browse normally: it learns which page you open next on each site. Click its icon to see time saved, turn it off, or delete all data. Nothing leaves this Mac.",
+         show_when=["Predictive Loading", "Developer mode"]),
 ]
 
 store = [
