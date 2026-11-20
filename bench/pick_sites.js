@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { chromium } = require("playwright");
 const { isSafeLink } = require("../extension/linksafety.js");
-const names = fs.readFileSync(path.join(__dirname, "..", "data", "raw", "top-1m.csv"), "utf8").split("\n").slice(0, 400).map((l) => l.split(",")[1]).filter(Boolean);
+const names = fs.readFileSync(path.join(__dirname, "..", "data", "raw", "top-1m.csv"), "utf8").split("\n").slice(0, 400).map((l) => (l.split(",")[1] || "").trim()).filter(Boolean);
 (async () => {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -22,8 +22,16 @@ const names = fs.readFileSync(path.join(__dirname, "..", "data", "raw", "top-1m.
       const loc = { origin: url.origin, protocol: url.protocol, pathname: url.pathname, search: url.search };
       const ok = links.filter((l) => l.visible && isSafeLink(l, loc) && l.pathname.length > 1);
       if (!ok.length) throw new Error("no safe link");
-      out.push({ rank: i + 1, domain: names[i], home: url.origin + url.pathname, next: ok[0].origin + ok[0].pathname, nextPath: ok[0].pathname });
-      console.log(out.length, names[i], ok[0].pathname);
+      // the link must land where it points (no redirect), or the extension cannot match it
+      let chosen = null;
+      for (const l of ok.slice(0, 5)) {
+        const r2 = await page.goto(l.origin + l.pathname, { timeout: 15000, waitUntil: "load" }).catch(() => null);
+        const u2 = new URL(page.url());
+        if (r2 && r2.status() < 400 && u2.origin === l.origin && u2.pathname === l.pathname) { chosen = l; break; }
+      }
+      if (!chosen) throw new Error("links redirect");
+      out.push({ rank: i + 1, domain: names[i], home: url.origin + url.pathname, homePath: url.pathname, next: chosen.origin + chosen.pathname, nextPath: chosen.pathname });
+      console.log(out.length, names[i], chosen.pathname);
     } catch (e) {
       console.log("skip", names[i], String(e.message).slice(0, 60));
     }

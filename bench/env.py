@@ -11,10 +11,11 @@ import sys
 import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE = os.path.expanduser("~/.cache/pl-bench")
+BASE = os.path.expanduser(os.environ.get("PL_BENCH_BASE", "~/.cache/pl-bench"))
 DATA = os.path.join(BASE, "data")
 BIN = os.path.join(BASE, "bin")
-UB_PORT, PROXY_PORT = 5300, 1080
+UB_PORT = int(os.environ.get("PL_BENCH_UB_PORT", "5300"))
+PROXY_PORT = int(os.environ.get("PL_BENCH_PROXY_PORT", "1080"))
 ENV = dict(os.environ, PL_DATA=DATA, PL_PORT=str(UB_PORT), PL_CYCLE="10", PL_TICK="2",
            PATH=BIN + ":" + os.environ["PATH"])
 

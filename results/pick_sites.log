@@ -1,54 +1,123 @@
-1 google.com /intl/en/about/products
-2 cloudflare.com /products/
-3 amazonaws.com /migration-and-modernization/
-skip ezviz7.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://ezviz7.com/
-4 facebook.com /reg/
-5 fbcdn.net /reg/
-skip gstatic.com status 404
-6 microsoft.com /microsoft-365
-skip googleapis.com status 404
-skip youtube.com no safe link
-7 apple.com /us/shop/goto/store
-skip akamai.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamai.net/
-skip hicloudcam.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://hicloudcam.
-8 instagram.com /accounts/password/reset/
-skip akamaiedge.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamaiedge.
-skip linkedin.com status 403
-skip twitter.com status 403
-9 azure.com /en-us/support/
-skip domaincontrol.com page.goto: net::ERR_CONNECTION_REFUSED at https://domaincont
-skip akadns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akadns.net/
-skip googlevideo.com page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://goog
-skip appsflyersdk.com status 403
-skip googletagmanager.com status 404
-skip mail.ru no safe link
-10 triplinkintl.com /en/contact/
-skip cloudfront.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://cloudfront.
-skip office.com no safe link
-skip gwfb.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gwfb.net/
+skip google.com links redirect
+1 cloudflare.com /products/
+2 amazonaws.com /migration-and-modernization/
+skip ezviz7.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://ezviz7.com/
+3 facebook.com /reg/
+4 fbcdn.net /reg/
+skip gstatic.com status 404
+5 microsoft.com /en-us/windows/
+skip googleapis.com status 404
+skip youtube.com no safe link
+6 apple.com /retail/
+skip akamai.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamai.net/
+skip hicloudcam.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://hicloudcam.
+skip instagram.com links redirect
+skip akamaiedge.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akamaiedge.
+skip linkedin.com status 403
+skip twitter.com status 403
+7 azure.com /en-us/support/
+skip domaincontrol.com page.goto: net::ERR_CONNECTION_REFUSED at https://domaincont
+skip akadns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akadns.net/
+skip googlevideo.com page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://goog
+skip appsflyersdk.com status 403
+skip googletagmanager.com status 404
+skip mail.ru no safe link
+8 triplinkintl.com /en/contact/
+skip cloudfront.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://cloudfront.
+skip office.com no safe link
+skip gwfb.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gwfb.net/
 C
-skip amazon.com no safe link
-skip live.com no safe link
-11 sharepoint.com /en-us/microsoft-365
-skip gtld-servers.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gtld-server
-skip aaplimg.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://aaplimg.com
-12 github.com /platform
-skip cloud.microsoft no safe link
-skip trafficmanager.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://trafficmana
-13 dzen.ru /pogoda/20815
-skip w2rt6byl5nf1opmc-a.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://w2rt6byl5nf
-skip wikipedia.org no safe link
-14 netflix.com /login
-skip apple-dns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://apple-dns.n
-15 fastly.net /resources/report/2026-gartner-magic-quadrant-edge-distribution-platforms
-skip office.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://office.net/
-16 whatsapp.net /calling
-skip lsrelayaccess.com page.goto: net::ERR_CONNECTION_RESET at https://lsrelayacces
-skip bing.com no safe link
-skip googleusercontent.com status 404
-skip x.com status 403
-skip pv-cdn.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://pv-cdn.net/
-17 doubleclick.net /about/
-18 googlesyndication.com /intl/en/about/products
-skip youtu.be no safe link
-skip windows.net page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://wind
+skip amazon.com no safe link
+skip live.com no safe link
+9 sharepoint.com /en-us/microsoft-365
+skip gtld-servers.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://gtld-server
+skip aaplimg.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://aaplimg.com
+10 github.com /platform
+skip cloud.microsoft no safe link
+skip trafficmanager.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://trafficmana
+11 dzen.ru /news/rubric/quotes/0
+skip w2rt6byl5nf1opmc-a.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://w2rt6byl5nf
+skip wikipedia.org no safe link
+12 netflix.com /login
+skip apple-dns.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://apple-dns.n
+13 fastly.net /resources/report/2026-gartner-magic-quadrant-edge-distribution-platforms
+skip office.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://office.net/
+14 whatsapp.net /calling
+skip lsrelayaccess.com page.goto: net::ERR_CONNECTION_RESET at https://lsrelayacces
+skip bing.com no safe link
+skip googleusercontent.com status 404
+skip x.com status 403
+skip pv-cdn.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://pv-cdn.net/
+15 doubleclick.net /about/
+skip googlesyndication.com links redirect
+skip youtu.be no safe link
+skip windows.net page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://wind
+16 pinterest.com /shopping/
+skip microsoftonline.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://microsofton
+skip icloud.com no safe link
+skip cloudflare.net status 403
+17 zoom.us /en/products/ai-assistant/features/ai-note-taking/
+skip adobe.com status 403
+skip goo.gl status 400
+18 tiktok.com /explore
+skip windowsupdate.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://windowsupda
+skip skype.com no safe link
+19 whatsapp.com /calling
+20 gandi.net /en/discounts
+skip gvt1.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://gvt1.com/
+C
+skip googledomains.com no safe link
+skip myfritz.net no safe link
+skip digicert.com status 403
+skip wa.me page.goto: Timeout 15000ms exceeded.
+Call log:
+  - navigatin
+21 wordpress.org /showcase/
+skip yahoo.com page.goto: Timeout 15000ms exceeded.
+Call log:
+  - navigatin
+skip edgekey.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://edgekey.net
+skip h264.io page.goto: net::ERR_NAME_NOT_RESOLVED at https://h264.io/
+Ca
+skip tiktokcdn.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://tiktokcdn.c
+skip a2z.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://a2z.com/
+Ca
+skip spotify.com no safe link
+skip epicgames.com status 403
+22 amazonvideo.com /storefront
+23 opera.com /browsers
+24 b-cdn.net /cdn/
+25 roblox.com /CreateAccount
+26 vimeo.com /features/video-player
+27 ntp.org /donate/
+skip 3gppnetwork.org page.goto: net::ERR_NAME_NOT_RESOLVED at https://3gppnetwork
+skip tiktokv.com status 404
+skip aws.dev page.goto: net::ERR_NAME_NOT_RESOLVED at https://aws.dev/
+Ca
+skip qq.com no safe link
+28 baidu.com /licence/
+29 workers.dev /products/
+skip blogspot.com links redirect
+30 mozilla.org /en-US/
+31 intuit.com /ca/
+32 msn.com /en-us/weather/forecast/in-Granville,OH
+33 nginx.org /ru/
+skip cdn77.org page.goto: net::ERR_NAME_NOT_RESOLVED at https://cdn77.org/
+
+34 wordpress.com /support/
+35 f5.com /support
+36 t-online.de /wetter
+37 t.me /faq
+skip akam.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://akam.net/
+C
+38 sentry.io /pricing/
+skip cdninstagram.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://cdninstagra
+39 nginx.com /support
+skip edgesuite.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://edgesuite.n
+skip 2mdn.net page.goto: net::ERR_NAME_NOT_RESOLVED at https://2mdn.net/
+C
+skip shiabank.com page.goto: net::ERR_NAME_NOT_RESOLVED at https://shiabank.co
+40 ui.com /how-it-works/large
+skip chatgpt.com status 403
+41 europa.eu /cookies_en
+skip reddit.com no safe link

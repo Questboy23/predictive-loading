@@ -34,7 +34,7 @@ def session(rtt, ext, n, seed):
            "--timeouts.script", "3600000", "--timeouts.pageLoad", "60000",
            "--resultDir", os.path.join(ROOT, "results", "browsertime", "rtt%d-ext%s" % (rtt, ext))]
     for a in args:
-        cmd += ["--chrome.args", a]
+        cmd.append("--chrome.args=" + a)
     cmd.append(os.path.join(ROOT, "bench", "route2_script.cjs"))
     e = dict(os.environ, R2_SITES=os.path.join(ROOT, "bench", "sites.json"), R2_OUT=OUT, R2_EXT=ext,
              R2_RTT=str(rtt), R2_N=str(n), R2_SEED=str(seed), R2_CTL=str(env.PROXY_PORT + 1))

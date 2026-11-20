@@ -21,7 +21,11 @@ const TIMING = `const n = performance.getEntriesByType('navigation')[0] || {};
 module.exports = async function (context, commands) {
   const rnd = (() => { let s = Number(process.env.R2_SEED || 7); return () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648); })();
   const clickTo = async (path) => {
-    await commands.js.runAndWait(`const a=[...document.querySelectorAll('a[href]')].find(x=>x.pathname===${JSON.stringify(path)}); if(a){a.click()}else{location.href=${JSON.stringify(path)}}`);
+    const p = JSON.stringify(path);
+    const from = JSON.stringify(await commands.js.run("return location.href"));
+    await commands.js.run(`const a=[...document.querySelectorAll('a[href]')].find(x=>x.pathname===${p}); setTimeout(()=>{ if(a){a.removeAttribute('target'); a.click()} else {location.href=${p}} }, 0); return true;`);
+    await commands.wait.byCondition(`location.href !== ${from} && document.readyState === 'complete'`, 30000);
+    await commands.wait.byTime(300);
   };
   for (const s of sites) {
     try {

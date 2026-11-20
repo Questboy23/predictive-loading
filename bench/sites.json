@@ -1,0 +1,352 @@
+[
+ {
+  "rank": 1,
+  "domain": "google.com",
+  "home": "https://www.google.com/",
+  "next": "https://www.google.com/intl/en/about/products",
+  "nextPath": "/intl/en/about/products"
+ },
+ {
+  "rank": 2,
+  "domain": "cloudflare.com",
+  "home": "https://www.cloudflare.com/",
+  "next": "https://www.cloudflare.com/products/",
+  "nextPath": "/products/"
+ },
+ {
+  "rank": 3,
+  "domain": "amazonaws.com",
+  "home": "https://aws.amazon.com/",
+  "next": "https://aws.amazon.com/migration-and-modernization/",
+  "nextPath": "/migration-and-modernization/"
+ },
+ {
+  "rank": 5,
+  "domain": "facebook.com",
+  "home": "https://www.facebook.com/",
+  "next": "https://www.facebook.com/reg/",
+  "nextPath": "/reg/"
+ },
+ {
+  "rank": 6,
+  "domain": "fbcdn.net",
+  "home": "https://www.facebook.com/",
+  "next": "https://www.facebook.com/reg/",
+  "nextPath": "/reg/"
+ },
+ {
+  "rank": 8,
+  "domain": "microsoft.com",
+  "home": "https://www.microsoft.com/en-us",
+  "next": "https://www.microsoft.com/microsoft-365",
+  "nextPath": "/microsoft-365"
+ },
+ {
+  "rank": 11,
+  "domain": "apple.com",
+  "home": "https://www.apple.com/",
+  "next": "https://www.apple.com/us/shop/goto/store",
+  "nextPath": "/us/shop/goto/store"
+ },
+ {
+  "rank": 14,
+  "domain": "instagram.com",
+  "home": "https://www.instagram.com/",
+  "next": "https://www.instagram.com/accounts/password/reset/",
+  "nextPath": "/accounts/password/reset/"
+ },
+ {
+  "rank": 18,
+  "domain": "azure.com",
+  "home": "https://azure.microsoft.com/en-us",
+  "next": "https://azure.microsoft.com/en-us/support/",
+  "nextPath": "/en-us/support/"
+ },
+ {
+  "rank": 25,
+  "domain": "triplinkintl.com",
+  "home": "https://www.triplinkintl.com/en/home/",
+  "next": "https://www.triplinkintl.com/en/contact/",
+  "nextPath": "/en/contact/"
+ },
+ {
+  "rank": 31,
+  "domain": "sharepoint.com",
+  "home": "https://www.microsoft.com/en-us/microsoft-365/sharepoint/collaboration",
+  "next": "https://www.microsoft.com/en-us/microsoft-365",
+  "nextPath": "/en-us/microsoft-365"
+ },
+ {
+  "rank": 34,
+  "domain": "github.com",
+  "home": "https://github.com/",
+  "next": "https://github.com/platform",
+  "nextPath": "/platform"
+ },
+ {
+  "rank": 37,
+  "domain": "dzen.ru",
+  "home": "https://dzen.ru/",
+  "next": "https://dzen.ru/pogoda/20815",
+  "nextPath": "/pogoda/20815"
+ },
+ {
+  "rank": 40,
+  "domain": "netflix.com",
+  "home": "https://www.netflix.com/",
+  "next": "https://www.netflix.com/login",
+  "nextPath": "/login"
+ },
+ {
+  "rank": 42,
+  "domain": "fastly.net",
+  "home": "https://www.fastly.com/",
+  "next": "https://www.fastly.com/resources/report/2026-gartner-magic-quadrant-edge-distribution-platforms",
+  "nextPath": "/resources/report/2026-gartner-magic-quadrant-edge-distribution-platforms"
+ },
+ {
+  "rank": 44,
+  "domain": "whatsapp.net",
+  "home": "https://www.whatsapp.com/",
+  "next": "https://www.whatsapp.com/calling",
+  "nextPath": "/calling"
+ },
+ {
+  "rank": 50,
+  "domain": "doubleclick.net",
+  "home": "https://marketingplatform.google.com/about/enterprise/",
+  "next": "https://marketingplatform.google.com/about/",
+  "nextPath": "/about/"
+ },
+ {
+  "rank": 51,
+  "domain": "googlesyndication.com",
+  "home": "https://www.google.com/",
+  "next": "https://www.google.com/intl/en/about/products",
+  "nextPath": "/intl/en/about/products"
+ },
+ {
+  "rank": 54,
+  "domain": "pinterest.com",
+  "home": "https://www.pinterest.com/",
+  "next": "https://www.pinterest.com/ideas",
+  "nextPath": "/ideas"
+ },
+ {
+  "rank": 58,
+  "domain": "zoom.us",
+  "home": "https://www.zoom.com/",
+  "next": "https://www.zoom.com/en/contact/contact-sales/",
+  "nextPath": "/en/contact/contact-sales/"
+ },
+ {
+  "rank": 61,
+  "domain": "tiktok.com",
+  "home": "https://www.tiktok.com/",
+  "next": "https://www.tiktok.com/explore",
+  "nextPath": "/explore"
+ },
+ {
+  "rank": 64,
+  "domain": "whatsapp.com",
+  "home": "https://www.whatsapp.com/",
+  "next": "https://www.whatsapp.com/calling",
+  "nextPath": "/calling"
+ },
+ {
+  "rank": 65,
+  "domain": "gandi.net",
+  "home": "https://www.gandi.net/en",
+  "next": "https://www.gandi.net/en/discounts",
+  "nextPath": "/en/discounts"
+ },
+ {
+  "rank": 71,
+  "domain": "wordpress.org",
+  "home": "https://wordpress.org/",
+  "next": "https://wordpress.org/showcase/",
+  "nextPath": "/showcase/"
+ },
+ {
+  "rank": 72,
+  "domain": "yahoo.com",
+  "home": "https://www.yahoo.com/",
+  "next": "https://www.yahoo.com/news/",
+  "nextPath": "/news/"
+ },
+ {
+  "rank": 79,
+  "domain": "amazonvideo.com",
+  "home": "https://www.primevideo.com/offers/nonprimehomepage",
+  "next": "https://www.primevideo.com/storefront",
+  "nextPath": "/storefront"
+ },
+ {
+  "rank": 80,
+  "domain": "opera.com",
+  "home": "https://www.opera.com/",
+  "next": "https://www.opera.com/browsers",
+  "nextPath": "/browsers"
+ },
+ {
+  "rank": 81,
+  "domain": "b-cdn.net",
+  "home": "https://bunny.net/",
+  "next": "https://bunny.net/network",
+  "nextPath": "/network"
+ },
+ {
+  "rank": 82,
+  "domain": "roblox.com",
+  "home": "https://www.roblox.com/",
+  "next": "https://www.roblox.com/CreateAccount",
+  "nextPath": "/CreateAccount"
+ },
+ {
+  "rank": 83,
+  "domain": "vimeo.com",
+  "home": "https://vimeo.com/",
+  "next": "https://vimeo.com/features/video-player",
+  "nextPath": "/features/video-player"
+ },
+ {
+  "rank": 84,
+  "domain": "ntp.org",
+  "home": "https://www.ntp.org/",
+  "next": "https://www.ntp.org/donate/",
+  "nextPath": "/donate/"
+ },
+ {
+  "rank": 89,
+  "domain": "baidu.com",
+  "home": "https://www.baidu.com/",
+  "next": "https://www.baidu.com/duty",
+  "nextPath": "/duty"
+ },
+ {
+  "rank": 90,
+  "domain": "workers.dev",
+  "home": "https://www.cloudflare.com/products/workers/",
+  "next": "https://www.cloudflare.com/products/",
+  "nextPath": "/products/"
+ },
+ {
+  "rank": 91,
+  "domain": "blogspot.com",
+  "home": "https://www.blogger.com/about/",
+  "next": "https://www.blogger.com/go/home",
+  "nextPath": "/go/home"
+ },
+ {
+  "rank": 92,
+  "domain": "mozilla.org",
+  "home": "https://www.mozilla.org/",
+  "next": "https://www.mozilla.org/en-US/",
+  "nextPath": "/en-US/"
+ },
+ {
+  "rank": 93,
+  "domain": "intuit.com",
+  "home": "https://www.intuit.com/",
+  "next": "https://www.intuit.com/ca/",
+  "nextPath": "/ca/"
+ },
+ {
+  "rank": 94,
+  "domain": "msn.com",
+  "home": "https://www.msn.com/",
+  "next": "https://www.msn.com/en-us/weather/forecast/in-Granville,OH",
+  "nextPath": "/en-us/weather/forecast/in-Granville,OH"
+ },
+ {
+  "rank": 95,
+  "domain": "nginx.org",
+  "home": "https://nginx.org/",
+  "next": "https://nginx.org/ru/",
+  "nextPath": "/ru/"
+ },
+ {
+  "rank": 97,
+  "domain": "wordpress.com",
+  "home": "https://wordpress.com/",
+  "next": "https://wordpress.com/support/",
+  "nextPath": "/support/"
+ },
+ {
+  "rank": 98,
+  "domain": "f5.com",
+  "home": "https://www.f5.com/",
+  "next": "https://www.f5.com/support",
+  "nextPath": "/support"
+ },
+ {
+  "rank": 99,
+  "domain": "t-online.de",
+  "home": "https://www.t-online.de/",
+  "next": "https://www.t-online.de/wetter",
+  "nextPath": "/wetter"
+ },
+ {
+  "rank": 100,
+  "domain": "t.me",
+  "home": "https://telegram.org/",
+  "next": "https://telegram.org/faq",
+  "nextPath": "/faq"
+ },
+ {
+  "rank": 102,
+  "domain": "sentry.io",
+  "home": "https://sentry.io/welcome/",
+  "next": "https://sentry.io/pricing/",
+  "nextPath": "/pricing/"
+ },
+ {
+  "rank": 104,
+  "domain": "nginx.com",
+  "home": "https://www.f5.com/products/nginx",
+  "next": "https://www.f5.com/support",
+  "nextPath": "/support"
+ },
+ {
+  "rank": 108,
+  "domain": "ui.com",
+  "home": "https://ui.com/",
+  "next": "https://ui.com/how-it-works/large",
+  "nextPath": "/how-it-works/large"
+ },
+ {
+  "rank": 110,
+  "domain": "europa.eu",
+  "home": "https://european-union.europa.eu/index_en",
+  "next": "https://european-union.europa.eu/cookies_en",
+  "nextPath": "/cookies_en"
+ },
+ {
+  "rank": 112,
+  "domain": "lencr.org",
+  "home": "https://letsencrypt.org/docs/lencr.org/",
+  "next": "https://letsencrypt.org/docs/",
+  "nextPath": "/docs/"
+ },
+ {
+  "rank": 113,
+  "domain": "yandex.ru",
+  "home": "https://dzen.ru/",
+  "next": "https://dzen.ru/pogoda/20815",
+  "nextPath": "/pogoda/20815"
+ },
+ {
+  "rank": 115,
+  "domain": "bit.ly",
+  "home": "https://bitly.com/",
+  "next": "https://bitly.com/pages/pricing/black-friday/",
+  "nextPath": "/pages/pricing/black-friday/"
+ },
+ {
+  "rank": 123,
+  "domain": "samsung.com",
+  "home": "https://www.samsung.com/us/",
+  "next": "https://www.samsung.com/us/shop/",
+  "nextPath": "/us/shop/"
+ }
+]

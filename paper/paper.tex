@@ -1,0 +1,104 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,patterns}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\input{numbers.tex}
+\input{diagrams.tex}
+\newcommand{\V}[1]{\ifcsname v@#1\endcsname\csname v@#1\endcsname\else\textbf{??}\errmessage{missing value #1}\fi}
+
+\title{Predictive Loading: Learning a Person's Next DNS Lookup and Page Load\\from Their Own History}
+\author{Reed Ostrov\\Denison University}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\section{Introduction}
+Most of the delay in opening a web page is waiting: for a name to resolve, for a connection, for the first byte. Much of that waiting is predictable. People return to the same sites, follow the same paths through them, and do so at similar times of day. If the next load can be guessed, the waiting can happen before the click.
+
+This paper applies one idea at the two layers where speculative work is safe to do from the client: (1) DNS lookups for every application on macOS, where a wrong guess costs one cached query, and (2) full page loads inside Chrome, where the browser's Speculation Rules API \cite{specrules} can prefetch or prerender a same-origin page. Both layers use the same predictor, specified once and ported to Python and JavaScript; a test feeds both ports a 10{,}000-event sequence and requires byte-identical output.
+
+The predictor is a Bayesian mixture of four context models (order 0, 1 and 2, and hour of day), each using the Krichevsky--Trofimov estimator \cite{kt1981} with an escape symbol. It acts on a candidate $B$ only when $P(B)\,T_{\mathrm{saved}}(B) > C(B)$, with both sides measured on the device. All data stays on the device; the Chrome extension stores only SHA-256 hashes of paths and holds the single permission \texttt{storage}.
+
+Contributions: (i) a small, auditable predictor with a cost-aware decision rule that runs identically in two languages; (ii) a macOS resolver setup with watchdog, captive-portal, VPN and uninstall safety, tested by simulation; (iii) a Manifest V3 extension with no network access of its own; (iv) an evaluation that runs the offline kill test first, then measures lookup time, page loads at three Wi-Fi profiles, and API calls, against named baselines, reporting losses.
+
+\section{Background}
+\textbf{DNS caching.} A stub resolver asks a recursive resolver, which caches answers for their time to live (TTL). Unbound \cite{unbound} adds \emph{prefetch}, which refreshes a popular record shortly before it expires, and \emph{serve-expired}, which answers from an expired record when the upstream answer is slow (here after 400\,ms). Both help names already asked for recently. Neither helps a name that has dropped out of the cache or was never asked for on this network.
+
+\textbf{Speculative page loading.} Chrome's Speculation Rules API lets a page list URLs to \emph{prefetch} (fetch the document) or \emph{prerender} (load and render it in a hidden tab, then swap it in on navigation). Eagerness settings control when: \texttt{immediate} at once, \texttt{moderate} on hover. instant.page \cite{instantpage} preloads on hover; Quicklink \cite{quicklink} prefetches links in the viewport when the browser is idle; Guess.js \cite{guessjs} uses site-wide analytics to predict the next page. None of these learns from the individual person.
+
+\textbf{Sequence prediction.} Prediction by partial matching (PPM) \cite{cleary1984,moffat1990} blends context models of several orders through escape probabilities. Vitter and Krishnan \cite{vitter1996} showed that a good compressor is a good prefetcher. Padmanabhan and Mogul \cite{padmanabhan1996} measured predictive prefetching of web pages from server logs.
+
+\section{Method}
+\subsection{Events}
+On the Mac, an event is a domain name in lookup order, read from Unbound's reply log. In Chrome, an event is the SHA-256 hash of a same-origin page path, with the query string and fragment dropped, kept per origin (itself hashed). A repeat of the previous event is ignored, so reloads count once.
+
+\subsection{Context models and estimator}
+Four models predict the next event $x$ from contexts $c$: the empty context (order 0), the previous event (order 1), the previous two events (order 2), and the local hour (0--23). In context $c$, with $k_c$ distinct symbols seen, repeat counts $n_x$ summing to $N_c$, and escape count $e_c$ (the number of times a symbol was new to $c$), the Krichevsky--Trofimov estimate over the $k_c$ symbols plus an escape symbol is
+\[
+P(x\mid c) = \frac{n_x + \tfrac12}{N_c + e_c + \tfrac12 (k_c+1)}, \qquad
+P(\mathrm{esc}\mid c) = \frac{e_c + \tfrac12}{N_c + e_c + \tfrac12 (k_c+1)} .
+\]
+The escape mass goes to symbols not seen in $c$ in proportion to the order-0 model, and the order-0 escape is the probability of a brand-new event. Counts decay by a factor $d$ per event; storing counts scaled by $S=d^{-t}$ makes each update one addition, with renormalisation when $S>10^{100}$.
+
+\subsection{Mixture and decay}
+Model $i$ has weight $w_i \propto \prod_t P_i(x_t)^{d^{\,T-t}}$, kept as $\log w_i \leftarrow d\log w_i + \log P_i(x_t)$. The mixture is $P(x)=\sum_i w_i P_i(x)$. Six copies run in parallel with $d\in\{0.9, 0.95, 0.98, 0.99, 0.995, 0.999\}$; at each new day the copy with the lowest log-loss over the last 7 days is used. The previous event is never a candidate. Predictability is reported as bits per event, $-\frac1T\sum_t \log_2 P(x_t)$.
+
+\subsection{Decision rule}
+A candidate $B$ is acted on only if $P(B)\,T_{\mathrm{saved}}(B) > C(B)$. On the Mac, $T_{\mathrm{saved}}(B)$ is $B$'s measured upstream lookup time (an exponential average of uncached replies) and $C(B)$ is the measured time of a local query. In Chrome, $T_{\mathrm{saved}}(B)$ is $B$'s measured load time and $C(B)$ is the expected wasted bytes, $(1-P(B))$ times the page's measured size, divided by measured throughput. Prerender is chosen over prefetch only when its expected net gain is higher: prefetch saves only the network share of the load but wastes only the document; prerender saves the whole load but wastes the page with its subresources (estimated at four times the document). At most two prerenders are issued; other safe same-origin links get \texttt{moderate} (hover) prefetch.
+
+\subsection{Measuring benefit}
+Both tools keep a random holdout: 10\% of the Mac daemon's prefetch decisions and 20\% of the extension's top prediction are recorded but not acted on. Time saved is the holdout mean minus the treated mean, times treated hits, with a bootstrap interval and $n$; \texttt{predictive-loading stats} and the extension popup print these.
+
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{\systemdiagram}
+\caption{System. Left: every macOS app resolves through a local Unbound; the daemon reads its query log, predicts, and warms names through 127.0.0.1. Right: the extension's content script hashes the page path, predicts, and writes Speculation Rules. Both use the same predictor (double border).}
+\label{fig:system}
+\end{figure}
+
+\section{Safety design}
+\textbf{macOS.} Unbound listens only on 127.0.0.1 and ::1 and refuses all other clients; it validates DNSSEC, minimises query names, and hides its identity and version. It forwards to the resolvers the current network provides (\texttt{scutil --dns}). Both Unbound and the daemon run under launchd with KeepAlive. A watchdog asks Unbound for \texttt{localhost} every 2\,s and restores the original DNS settings after 3 failures. After any network change or wake, the Mac uses its original DNS (pass-through) until \texttt{captive.apple.com} returns its success page, so captive portals work; Apple's captive-portal names are forwarded uncached and never prefetched. When a VPN interface is up the tool steps aside fully. After a macOS or Unbound version change the daemon re-runs a health check (local answer, real lookup, and a SERVFAIL for \texttt{dnssec-failed.org}). The cache is dumped every 60\,s and at shutdown and reloaded at start. The daemon uses only the Python standard library, queries only 127.0.0.1, and writes data files with mode 600. Uninstall restores each network service's saved DNS list exactly and deletes every file.
+
+\textbf{Chrome.} The extension requests only \texttt{storage}, has a strict content security policy, is not allowed in Incognito, and contains no \texttt{fetch}, \texttt{XMLHttpRequest}, WebSocket, \texttt{sendBeacon}, \texttt{eval}, \texttt{Function} or \texttt{innerHTML}. It writes speculation rules only for same-origin http(s) links, never for links whose path or text matches logout, sign-out, delete, remove, unsubscribe, cart, checkout, buy, pay, order, confirm, cancel or settings, never for downloads, and nothing when Data Saver is on. The link checks are adapted from instant.page (MIT) and Quicklink (Apache-2.0).
+
+\begin{figure}[t]
+\centering
+\timelinediagram
+\caption{Load timeline. Without prediction, DNS, connection and loading follow the click. With prediction, DNS is warmed and the page prerendered before the click, leaving only activation.}
+\label{fig:timeline}
+\end{figure}
+
+\input{results.tex}
+
+\section{Related work}
+Padmanabhan and Mogul \cite{padmanabhan1996} predicted next requests from server-side access patterns and measured latency reduction against extra traffic, the same trade the decision rule here makes per candidate. Vitter and Krishnan \cite{vitter1996} proved that prefetchers built on universal compressors approach the optimal fault rate; the predictor here is such a compressor-style model, scored in bits per event. PPM \cite{cleary1984} and its escape method C \cite{moffat1990} are the classical way to blend contexts of several orders; this work instead mixes whole models by their decayed past performance and uses the KT estimator \cite{kt1981} inside each. Guess.js \cite{guessjs} predicts next pages from aggregate analytics on the server; here prediction is per person and never leaves the device. instant.page \cite{instantpage} and Quicklink \cite{quicklink} are history-free heuristics; the Speculation Rules API \cite{specrules} is the browser mechanism this work drives.
+
+\section{Conclusion}
+\input{conclusion.tex}
+
+\begin{thebibliography}{10}\small
+\bibitem{padmanabhan1996} V.~N. Padmanabhan and J.~C. Mogul. Using predictive prefetching to improve World Wide Web latency. \emph{ACM SIGCOMM Computer Communication Review}, 26(3):22--36, 1996. doi:10.1145/235160.235164.
+\bibitem{vitter1996} J.~S. Vitter and P.~Krishnan. Optimal prefetching via data compression. \emph{Journal of the ACM}, 43(5):771--793, 1996. doi:10.1145/234752.234753.
+\bibitem{cleary1984} J.~G. Cleary and I.~H. Witten. Data compression using adaptive coding and partial string matching. \emph{IEEE Transactions on Communications}, 32(4):396--402, 1984. doi:10.1109/TCOM.1984.1096090.
+\bibitem{moffat1990} A.~Moffat. Implementing the PPM data compression scheme. \emph{IEEE Transactions on Communications}, 38(11):1917--1921, 1990. doi:10.1109/26.61469.
+\bibitem{kt1981} R.~E. Krichevsky and V.~K. Trofimov. The performance of universal encoding. \emph{IEEE Transactions on Information Theory}, 27(2):199--207, 1981. doi:10.1109/TIT.1981.1056331.
+\bibitem{guessjs} Guess.js contributors. Guess.js: libraries and tools for enabling data-driven user experiences on the web. \url{https://github.com/guess-js/guess}, 2018--2026.
+\bibitem{specrules} WICG. Speculation Rules. \url{https://wicg.github.io/nav-speculation/speculation-rules.html}, accessed November 2026.
+\bibitem{instantpage} A.~Dieulot. instant.page. \url{https://instant.page/}, v5.2.0.
+\bibitem{quicklink} Google Chrome Labs. Quicklink. \url{https://github.com/GoogleChromeLabs/quicklink}, v3.0.1.
+\bibitem{unbound} NLnet Labs. Unbound DNS resolver. \url{https://nlnetlabs.nl/projects/unbound/}, v1.26.2.
+\end{thebibliography}
+\end{document}
