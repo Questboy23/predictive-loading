@@ -45,11 +45,12 @@ predictive-loading stats</pre>
 <p>From the Chrome Web Store once approved, or download the extension zip from the <a href="%(rel)s">release</a>, unzip, open chrome://extensions, turn on Developer mode, and choose Load unpacked. Permission requested: storage only.</p>
 <h2>Measured results</h2>
 <p>Offline replay: the predictor's log-loss beat an order-1 Markov baseline on %(wins)s of %(nt)s traces. On recorded Chrome history it guessed the next domain correctly %(dom)s%% of the time.</p>
+<p>In the 50-site Chrome test below, each site had one training visit; the extension rarely passed its own threshold and showed no page-load gain. API calls through the Mac tool were %(r3w)s ms faster per call after the first round and slower on the first call (paired difference %(r3c)s ms).</p>
 <table><tr><th>Wi-Fi profile</th><th>Next page wait, both off (median)</th><th>Both on (median)</th><th>Extension effect, paired median [95%% CI]</th></tr>%(rows)s</table>
 <p>DNS after TTLs expire (Tranco top 500): system resolver %(sys)s ms, Unbound alone %(ub)s ms, Unbound + predictor %(up)s ms (medians). Full numbers, losses included: <a href="https://github.com/Questboy23/predictive-loading/blob/main/RESULTS.md">RESULTS.md</a>.</p>
 """ % {"rel": REL, "store": store_html, "wins": g("r0.wins_markov_bits"), "nt": g("r0.ntraces"),
        "dom": g("r0.recorded_chrome_domains.mixture.top1"), "rows": rows, "sys": g("r1.warm.system_default.median_ms"),
-       "ub": g("r1.warm.unbound_alone.median_ms"), "up": g("r1.warm.unbound_plus_predictor.median_ms")}
+       "ub": g("r1.warm.unbound_alone.median_ms"), "r3w": g("r3.warm.paired"), "r3c": g("r3.cold.paired"), "up": g("r1.warm.unbound_plus_predictor.median_ms")}
 open(os.path.join(OUT, "index.html"), "w").write(page("Predictive Loading", body))
 
 md = open(os.path.join(ROOT, "docs", "PRIVACY.md")).read()
