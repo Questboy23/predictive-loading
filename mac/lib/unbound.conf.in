@@ -1,0 +1,59 @@
+# predictive-loading Unbound config. Rendered by predictive-loading; do not edit.
+server:
+    interface: 127.0.0.1@{PORT}
+    interface: ::1@{PORT}
+    port: {PORT}
+    access-control: 0.0.0.0/0 refuse
+    access-control: ::0/0 refuse
+    access-control: 127.0.0.0/8 allow
+    access-control: ::1/128 allow
+    do-daemonize: no
+    username: "{USERNAME}"
+    directory: "{DATA}"
+    chroot: ""
+    pidfile: "{DATA}/unbound.pid"
+    logfile: "{DATA}/unbound.log"
+    use-syslog: no
+    log-replies: yes
+    log-local-actions: no
+    log-time-ascii: no
+    verbosity: 0
+    # Unbound's own repeat handling: refresh popular records before expiry,
+    # answer from an expired record if upstream is slower than 400 ms.
+    prefetch: yes
+    prefetch-key: yes
+    serve-expired: yes
+    serve-expired-ttl: 86400
+    serve-expired-client-timeout: 400
+    # Privacy and validation.
+    qname-minimisation: yes
+    hide-identity: yes
+    hide-version: yes
+    harden-glue: yes
+    harden-dnssec-stripped: yes
+    auto-trust-anchor-file: "{DATA}/root.key"
+    val-clean-additional: yes
+    msg-cache-size: 32m
+    rrset-cache-size: 64m
+    cache-min-ttl: 0
+    # Apple captive-portal checks must always see the live network.
+    local-zone: "captive.apple.com." transparent
+    local-zone: "captive.g.aaplimg.com." transparent
+
+remote-control:
+    control-enable: yes
+    control-use-cert: no
+    control-interface: "{DATA}/unbound.ctl"
+
+# Apple captive-portal names: forwarded uncached to the network's resolvers.
+forward-zone:
+    name: "captive.apple.com."
+    forward-no-cache: yes
+{FORWARD_ADDRS}
+forward-zone:
+    name: "captive.g.aaplimg.com."
+    forward-no-cache: yes
+{FORWARD_ADDRS}
+forward-zone:
+    name: "."
+{FORWARD_ADDRS}
