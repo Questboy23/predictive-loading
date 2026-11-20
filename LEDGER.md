@@ -72,3 +72,11 @@ Design changes made before the full run (both found on a 30-user smoke run): esc
 ## Blockers / needs a human
 - Web Store route (a) impossible: 1Password CLI has no account configured on this Mac (`op whoami`: "No accounts configured"). Route (b) blocked: Google asked for a password re-sign-in on the dashboard, and the $5 fee conflicts with the global never-spend rule. Route (c) taken.
 - macOS live install needs Reed's admin password (`predictive-loading enable` shows one macOS prompt).
+
+## 2026-11-20 04:20 EST: confirmatory round done (v1.0.5)
+- E1b live API calls: no difference (HL -0.05 ms, CI -4.68 to 6.48, Holm p 0.99).
+- E2 held-out history: P beats S by 0.22 ms per lookup, CI 0.20 to 0.25, faster on 15 of 15 days, Holm p 0.0002; hit rate 0.754 to 0.790; 2.3x upstream queries.
+- E3 Chrome habit (42 sites): extension prefetched 163 of 252 next pages; HL -98.6 ms, CI -258.7 to +106.9, Holm p 0.69, not confirmed.
+- E3 attempt 1 void (macOS purged the test browser); full rerun logged as deviation iv; concurrent load from other programs logged as deviation v.
+- Guide auto-click test passed end to end (installed extension, closed itself).
+- Outreach plan final in docs/OUTREACH.md; nothing sent.

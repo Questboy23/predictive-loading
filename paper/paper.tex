@@ -11,7 +11,9 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
 \input{numbers.tex}
+\input{confirm_numbers.tex}
 \input{diagrams.tex}
+\newcommand{\C}[1]{\ifcsname c@#1\endcsname\csname c@#1\endcsname\else\textbf{??}\errmessage{missing confirm value #1}\fi}
 \newcommand{\V}[1]{\ifcsname v@#1\endcsname\csname v@#1\endcsname\else\textbf{??}\errmessage{missing value #1}\fi}
 
 \title{Predictive Loading: Learning a Person's Next DNS Lookup and Page Load\\from Their Own History}
@@ -82,6 +84,8 @@ Both tools keep a random holdout: 10\% of the Mac daemon's prefetch decisions an
 \end{figure}
 
 \input{results.tex}
+\input{confirm_method.tex}
+\input{confirm_results.tex}
 
 \section{Related work}
 Padmanabhan and Mogul \cite{padmanabhan1996} predicted next requests from server-side access patterns and measured latency reduction against extra traffic, the same trade the decision rule here makes per candidate. Vitter and Krishnan \cite{vitter1996} proved that prefetchers built on universal compressors approach the optimal fault rate; the predictor here is such a compressor-style model, scored in bits per event. PPM \cite{cleary1984} and its escape method C \cite{moffat1990} are the classical way to blend contexts of several orders; this work instead mixes whole models by their decayed past performance and uses the KT estimator \cite{kt1981} inside each. Guess.js \cite{guessjs} predicts next pages from aggregate analytics on the server; here prediction is per person and never leaves the device. instant.page \cite{instantpage} and Quicklink \cite{quicklink} are history-free heuristics; the Speculation Rules API \cite{specrules} is the browser mechanism this work drives.

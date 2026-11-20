@@ -38,10 +38,11 @@ async function arm(s, ext) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "pl-habit-"));
   const args = [`--proxy-server=socks5://127.0.0.1:${port}`, "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1"];
   if (ext === "on") args.push(`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`);
-  const ctx = await chromium.launchPersistentContext(dir, { headless: true, channel: "chromium", args, viewport: { width: 1280, height: 900 } });
-  ctx.setDefaultTimeout(30000);
   const rows = [];
+  let ctx;
   try {
+    ctx = await chromium.launchPersistentContext(dir, { headless: true, channel: "chromium", args, viewport: { width: 1280, height: 900 } });
+    ctx.setDefaultTimeout(30000);
     const page = ctx.pages()[0] || (await ctx.newPage());
     for (let i = 0; i < TRAIN; i++) {
       await page.goto(s.home, { waitUntil: "load" });
@@ -59,7 +60,7 @@ async function arm(s, ext) {
       rows.push({ site: s.domain, ext, rep: i, home, next });
     }
   } finally {
-    await ctx.close();
+    if (ctx) await ctx.close();
     fs.rmSync(dir, { recursive: true, force: true });
   }
   return rows;

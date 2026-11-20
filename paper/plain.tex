@@ -12,7 +12,9 @@
 \usepackage{enumitem}
 \setlist{itemsep=2pt,topsep=3pt}
 \input{numbers.tex}
+\input{confirm_numbers.tex}
 \input{diagrams.tex}
+\newcommand{\C}[1]{\ifcsname c@#1\endcsname\csname c@#1\endcsname\else\textbf{??}\errmessage{missing confirm value #1}\fi}
 \newcommand{\V}[1]{\ifcsname v@#1\endcsname\csname v@#1\endcsname\else\textbf{??}\errmessage{missing value #1}\fi}
 \newcommand{\term}[1]{\textbf{#1}}
 \newcommand{\DL}{https://github.com/Questboy23/predictive-loading/releases/latest}
@@ -33,7 +35,7 @@ Free, open source (MIT license). Nothing you browse leaves your computer.}}
 \end{center}
 
 \begin{abstract}
-\noindent Opening a web page involves several short waits that happen one after another after you click. This paper describes two small tools that guess your next click from your own past behavior and do some of that waiting ahead of time. One runs on the Mac and speeds up name lookups for every app. The other is a Chrome extension that loads the next page on a site in the background. Both use the same guessing method, both act only when the expected time saved is larger than the cost, and both keep all data on your computer. In tests on old public browsing logs the method guessed better than the standard simple approach on all \V{r0.ntraces} logs. In live timing tests the gains were small and mixed, and some tests showed losses. Every number here is reported as measured, including the losses.
+\noindent Opening a web page involves several short waits that happen one after another after you click. This paper describes two small tools that guess your next click from your own past behavior and do some of that waiting ahead of time. One runs on the Mac and speeds up name lookups for every app. The other is a Chrome extension that loads the next page on a site in the background. Both use the same guessing method, both act only when the expected time saved is larger than the cost, and both keep all data on your computer. In tests on old public browsing logs the method guessed better than the standard simple approach on all \V{r0.ntraces} logs. In live timing tests the gains were small and mixed, and some tests showed losses. A second round of tests, planned and written down in advance, found one clear result: on two weeks of real browsing history the Mac tool made name lookups a little faster on every day. The Chrome extension preloaded \C{e3.on_served_preloaded} of \C{e3.on_measured} next pages and probably saves about a tenth of a second, but that test was too noisy to prove it. Every number here is reported as measured, including the losses.
 \end{abstract}
 
 \section{The problem: waiting in a line}
@@ -152,6 +154,17 @@ The predictor made the local resolver faster than without it. On this campus net
 \textbf{4. Page loads in Chrome (50 sites, 3 Wi-Fi speeds).} Each site was visited only once before testing, which is far less history than a real user builds up. With so little history the extension rarely passed its own cost rule and showed no clear gain; at the 60\,ms setting it was \V{r2.60.eff.ext}\,ms slower (CI \V{r2.60.eff.ext.lo} to \V{r2.60.eff.ext.hi}).
 
 \textbf{5. Compared with other preloaders.} In a small test where a simulated user hovered over a link before clicking, the median wait for the next page was \V{pb.extension.med}\,ms with the extension, \V{pb.default.med}\,ms with Chrome's default, \V{pb.instantpage.med}\,ms with instant.page and \V{pb.quicklink.med}\,ms with Quicklink. Only \V{pb.extension.n} to 8 sites were tested, so this is a hint, not proof.
+
+\section{Second round: tests planned in advance}
+The tests above were exploratory: they were designed and read by the same people, so a lucky pattern could pass for an effect. For the second round we wrote down every test, every number to report and every decision rule in \texttt{PREREG.md} and committed it to the public repository before running the analysis. This is called \term{pre-registration}. Because three main tests were run, each p-value was adjusted with the \term{Holm correction}, which keeps the chance of any false alarm across all three below 5\%. A \term{p-value} is the chance of seeing a difference this large if the tool did nothing; small is convincing. Effects are given as a \term{Hodges--Lehmann estimate}, a typical paired difference that one extreme value cannot drag around.
+
+\textbf{A. Name lookups, live (campus Wi-Fi).} Same 500 names, 5 rounds. The campus resolver answered first lookups in a median \C{e1a.cold.system_default.median_ms}\,ms, the local resolver with the predictor in \C{e1a.cold.unbound_plus_predictor.median_ms}\,ms. On repeat lookups the predictor cut the local resolver's median from \C{e1a.warm.unbound_alone.median_ms} to \C{e1a.warm.unbound_plus_predictor.median_ms}\,ms, but the campus resolver was still faster at \C{e1a.warm.system_default.median_ms}\,ms. Real API calls with the Mac tool on versus off differed by \C{e1b.warm.hl}\,ms per call (CI \C{e1b.warm.ci.lo} to \C{e1b.warm.ci.hi}; adjusted $p=\C{holm.e1b}$), on calls that take about \C{e1b.off_median_ms}\,ms.
+
+\textbf{B. Name lookups, replayed from real history.} We replayed the last 14 days of one person's real browsing (\C{e2.events_test_simulated} lookups) through three cache policies, after training only on the weeks before. The predictor raised the share of lookups answered instantly from memory from \C{e2.hit_rate.S} to \C{e2.hit_rate.P}. It saved \C{e2.primary_P_minus_S_per_day.hl}\,ms per lookup (CI \C{e2.primary_P_minus_S_per_day.ci.lo} to \C{e2.primary_P_minus_S_per_day.ci.hi}) and was faster on all \C{e2.primary_P_minus_S_per_day.n} days (adjusted $p=\C{holm.e2}$). This is real but small, because this network answers a miss in about \C{e2.net_ms_median}\,ms. The cost: about 2.3 times as many lookups sent to the network.
+
+\textbf{C. Page loads after a habit.} For each of \C{e3.sites} websites, a fresh Chrome visited the home page and clicked the same link 8 times to build a habit, then the timed visits began. This was done once with the extension on and once off, in random order. With the extension on, \C{e3.on_served_preloaded} of \C{e3.on_measured} next pages arrived already downloaded. The typical next page took \C{e3.on_next_median_ms}\,ms with the extension and \C{e3.off_next_median_ms}\,ms without. The paired estimate was \C{e3.next.hl}\,ms (CI \C{e3.next.ci.lo} to \C{e3.next.ci.hi}; adjusted $p=\C{holm.e3}$). That leans toward a gain of about a tenth of a second, but the range includes zero, so this test does not prove it. Page times on the open internet swing by hundreds of milliseconds from one visit to the next, and 42 sites were not enough to separate a 0.1 second gain from that noise.
+
+\textbf{Bottom line.} One of the three planned tests passed: the DNS predictor gives a small, steady gain on real history. Live API calls showed no change. The Chrome extension preloaded most next pages and probably saves time, but this test could not prove it.
 
 \section{How to install and remove it}
 Everything is at \url{\DL}.
