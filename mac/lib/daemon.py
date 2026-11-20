@@ -169,7 +169,9 @@ def versions():
 
 class Daemon:
     def __init__(self):
-        os.makedirs(DATA, mode=0o700, exist_ok=True)
+        os.makedirs(DATA, mode=0o711, exist_ok=True)
+        # 711: others may open stats.json (644, aggregate numbers only) by name, never list or read the 600 files.
+        os.chmod(DATA, 0o711)  # nosec B103 nosemgrep: insecure-file-permissions
         self.mode = "passthrough"
         self.fails = 0
         self.oks = 0

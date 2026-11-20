@@ -317,7 +317,8 @@ class MacSafety(unittest.TestCase):
             p = daemon.path(name)
             self.assertTrue(os.path.exists(p), name)
             self.assertEqual(stat.S_IMODE(os.stat(p).st_mode), 0o600, name)
-        self.assertEqual(stat.S_IMODE(os.stat(DATA).st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE(os.stat(DATA).st_mode), 0o711)  # no listing by others
+        self.assertEqual(stat.S_IMODE(os.stat(daemon.path("stats.json")).st_mode), 0o644)
         s = json.load(open(daemon.path("stats.json")))
         self.assertFalse(any(isinstance(v, str) and "." in v and v != s.get("mode") for v in s.values()))
 

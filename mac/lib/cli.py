@@ -53,8 +53,8 @@ def write_plists():
 
 def root_main(sub):
     if sub == "enable":
-        os.makedirs(daemon.DATA, mode=0o700, exist_ok=True)
-        os.chmod(daemon.DATA, 0o700)  # nosemgrep: insecure-file-permissions  (owner-only directory)
+        os.makedirs(daemon.DATA, mode=0o711, exist_ok=True)
+        os.chmod(daemon.DATA, 0o711)  # nosec B103 nosemgrep: insecure-file-permissions  (traverse only: lets `stats` open stats.json; files stay 600)
         daemon.snapshot_original()
         daemon.render_config(daemon.network_resolvers())
         anchor = [BREW + "/sbin/unbound-anchor", "-a", daemon.path("root.key")]
