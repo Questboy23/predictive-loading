@@ -145,15 +145,15 @@ def route2():
     w("Rows: Mac tool off/on x extension off/on. Home = home page load. Next = the person waits for the linked page "
       "(loadEventEnd minus activationStart). %d measured visit pairs, %d site errors excluded." % (len(rows), len(errs)))
     w()
-    w("| Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |")
-    w("|---|---|---|---|---|---|---|---|---|")
-    kv("r2.n", str(len(rows)))
     # Sanity check: separate sessions must not report identical timings (a shared-browser bug did once).
     sig = [(round(r["home"]["waited"], 1), round(r["next"]["waited"], 1)) for r in rows]
     dups = len(sig) - len(set(sig))
     kv("r2.duplicate_timings", str(dups))
     w("Sanity check: %d of %d visit pairs repeat another pair's exact timings." % (dups, len(rows)))
     w()
+    w("| Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |")
+    w("|---|---|---|---|---|---|---|---|---|")
+    kv("r2.n", str(len(rows)))
     kv("r2.errors", str(len(errs)))
     for rtt in (10, 60, 150):
         for ext in ("off", "on"):

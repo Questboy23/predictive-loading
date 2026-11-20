@@ -43,10 +43,10 @@ Kill test: mixture bits below order-1 Markov with CI below 0 on 6 of 6 traces (t
 
 Rows: Mac tool off/on x extension off/on. Home = home page load. Next = the person waits for the linked page (loadEventEnd minus activationStart). 312 measured visit pairs, 153 site errors excluded.
 
-| Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |
-|---|---|---|---|---|---|---|---|---|
 Sanity check: 0 of 312 visit pairs repeat another pair's exact timings.
 
+| Profile | Extension | Mac tool | n | Home median ms | Home p75 | Next median ms (95% CI) | Next p75 | Next served preloaded |
+|---|---|---|---|---|---|---|---|---|
 | home Wi-Fi (10 ms) | off | off | 22 | 2846 | 3744 | 1414 [872, 2679] | 2793 | 0 |
 | home Wi-Fi (10 ms) | off | on | 24 | 2006 | 3362 | 1522 [723, 3362] | 3585 | 0 |
 | home Wi-Fi (10 ms) | on | off | 27 | 1905 | 3499 | 1053 [533, 2216] | 2354 | 3 |
