@@ -24,3 +24,8 @@
 - Support URL: https://github.com/Questboy23/predictive-loading/issues
 - Screenshot: `docs/store/screenshot-1280x800.png`. Small promo tile: `docs/store/promo-440x280.png`
 - Icon: `extension/icons/128.png`
+
+## Submission
+- Submitted 2026-11-21 00:05 EST. Status: Pending review. Item ID fgipcoojipkngcfjlfdplcnokjggkeaa.
+- Public URL after approval: https://chromewebstore.google.com/detail/fgipcoojipkngcfjlfdplcnokjggkeaa
+- Category Functionality & UI, Free, Public, all regions, auto-publish after review. Flagged for in-depth review (broad host access from the content script).
